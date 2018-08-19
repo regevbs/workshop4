@@ -1038,11 +1038,11 @@ int main(int argc, char *argv[])
     struct kv_handle ** handle = malloc(NUM_SERVERS *sizeof(struct kv_handle));
     struct kv_server_address * indexer = malloc(sizeof(struct kv_server_address));
     struct kv_handle * indexerHandle = malloc(sizeof(struct kv_handle));
-    struct dkv_handle dkvHandle;
-    dkvHandle.indexer = indexerHandle;
+    struct dkv_handle * dkvHandle = malloc(sizeof(struct dkv_handle));
+    dkvHandle->indexer = indexerHandle;
     for(int k = 0 ; k < NUM_SERVERS; k ++)
     {    
-        dkvHandle.serverHandles[k] = handle[k];
+        dkvHandle->serverHandles[k] = handle[k];
     }
     //get input for the server ip and port
     int numArgs = 1 + 2 + NUM_SERVERS*2;//prog name, indexer ip port, server ip ports
@@ -1067,7 +1067,7 @@ int main(int argc, char *argv[])
             return 0;
         }  */
     }
-    dkv_open(server, indexer,&dkvHandle);
+    dkv_open(server, indexer,dkvHandle);
     free(indexer);
     free(server);
     /*
@@ -1093,35 +1093,35 @@ int main(int argc, char *argv[])
     /* Test small size */
     assert(100 < MAX_TEST_SIZE);
     memset(send_buffer, 'a', 100);
-    assert(0 == set(&dkvHandle, "1", send_buffer));
-    assert(0 == get(&dkvHandle, "1", &recv_buffer));
+    assert(0 == set(dkvHandle, "1", send_buffer));
+    assert(0 == get(dkvHandle, "1", &recv_buffer));
     assert(0 == strcmp(send_buffer, recv_buffer));
     release(recv_buffer);
 
     /* Test logic */
-    assert(0 == get(&dkvHandle, "1", &recv_buffer));
+    assert(0 == get(dkvHandle, "1", &recv_buffer));
     assert(0 == strcmp(send_buffer, recv_buffer));
     release(recv_buffer);
     memset(send_buffer, 'b', 100);
-    assert(0 == set(&dkvHandle, "1", send_buffer));
+    assert(0 == set(dkvHandle, "1", send_buffer));
     memset(send_buffer, 'c', 100);
-    assert(0 == set(&dkvHandle, "22", send_buffer));
+    assert(0 == set(dkvHandle, "22", send_buffer));
     memset(send_buffer, 'b', 100);
-    assert(0 == get(&dkvHandle, "1", &recv_buffer));
+    assert(0 == get(dkvHandle, "1", &recv_buffer));
     assert(0 == strcmp(send_buffer, recv_buffer));
     release(recv_buffer);
 
     /* Test large size */
     memset(send_buffer, 'x', MAX_TEST_SIZE - 1);
-    assert(0 == set(&dkvHandle, "1", send_buffer));
-    assert(0 == set(&dkvHandle, "333", send_buffer));
-    assert(0 == get(&dkvHandle, "1", &recv_buffer));
+    assert(0 == set(dkvHandle, "1", send_buffer));
+    assert(0 == set(dkvHandle, "333", send_buffer));
+    assert(0 == get(dkvHandle, "1", &recv_buffer));
     assert(0 == strcmp(send_buffer, recv_buffer));
     release(recv_buffer);
     
     
-    my_close(&dkvHandle);
-    free(&dkvHandle);
+    my_close(dkvHandle);
+    free(dkvHandle);
     return 0;
 }
     
