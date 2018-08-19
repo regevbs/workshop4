@@ -641,11 +641,11 @@ int handle_server_packets_only(struct kv_handle *handle, struct packet *packet)
         int mod = packet->find.num_of_servers;
         unsigned char* keyToFind = packet->find.key;
         printf("finding key %s\n",keyToFind);
-        unsigned hash =(unsigned)( hash(keyToFind) % mod);
-        printf("hashed to server %d\n",hash);
+        unsigned hashVal =(unsigned)( hash(keyToFind) % mod);
+        printf("hashed to server %d\n",hashVal);
         response_packet->type = LOCATION;
         response_size = sizeof(struct packet) + sizeof(unsigned);
-        response_packet->location.selected_server = hash;
+        response_packet->location.selected_server = hashVal;
             //memcpy the found data into the buffer
             //memcpy(response_packet->eager_get_response.value,toSend,strlen(toSend)  + 1);
             
