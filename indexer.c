@@ -636,7 +636,7 @@ int handle_server_packets_only(struct kv_handle *handle, struct packet *packet)
 	/* Only handle packets relevant to the server here - client will handle inside get/set() calls */
     case FIND:/* TODO (10LOC): handle a short GET() on the server */
     //find the index of the server that has the value, get the value and send it back in a packet
-        
+        ;
         //printf("index not found T_T\n");
         int mod = packet->find.num_of_servers;
         char* keyToFind = packet->find.key;
