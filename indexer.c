@@ -639,8 +639,8 @@ int handle_server_packets_only(struct kv_handle *handle, struct packet *packet)
         ;
         //printf("index not found T_T\n");
         int mod = packet->find.num_of_servers;
-        char* keyToFind = packet->find.key;
-        printf("finding key %s\n",key);
+        unsigned char* keyToFind = packet->find.key;
+        printf("finding key %s\n",keyToFind);
         unsigned hash =(unsigned)( hash(keyToFind) % mod);
         printf("hashed to server %d\n",hash);
         response_packet->type = LOCATION;
