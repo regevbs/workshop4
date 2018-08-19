@@ -1067,6 +1067,7 @@ int main(int argc, char *argv[])
             return 0;
         }  */
     }
+    printf("done first part\n");
     dkv_open(server, indexer,dkvHandle);
     free(indexer);
     free(server);
@@ -1090,6 +1091,7 @@ int main(int argc, char *argv[])
     */
     char send_buffer[MAX_TEST_SIZE] = {0};
     char *recv_buffer;
+    printf("done setup\n");
     /* Test small size */
     assert(100 < MAX_TEST_SIZE);
     memset(send_buffer, 'a', 100);
