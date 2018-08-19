@@ -772,7 +772,7 @@ int kv_set(struct kv_handle *kv_handle, const char *key, const char *value)
     pp_post_send(ctx, IBV_WR_RDMA_WRITE, packet_size, value, NULL, 0);// TODO (1LOC): replace with remote info for RDMA_WRITE from packet );
     return pp_wait_completions(kv_handle, 1,NULL);*/ // wait for both to complete 
 }
-int dkv_set(struct dkv_handle *dkv_h, const char *key, const char *value, unsigned length)
+int dkv_set(struct dkv_handle *dkv_h, const char *key, const char *value)//, unsigned length)
  {
     unsigned serverToContact = getServerNumFromIndexer(dkv_h, key);
     return kv_set(dkv_h->serverHandles[serverToContact], key, value);
@@ -801,7 +801,7 @@ int kv_get(struct kv_handle *kv_handle, const char *key, char **value)
     
 }
 
-int dkv_get(struct dkv_handle *dkv_h, const char *key, char **value, unsigned *length)
+int dkv_get(struct dkv_handle *dkv_h, const char *key, char **value)//, unsigned *length)
 {
     /*struct pingpong_context *ctx_indexer = dkv_h->indexer->ctx;
     struct packet *set_packet = (struct packet*)ctx_indexer->buf;
