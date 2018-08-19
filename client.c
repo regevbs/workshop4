@@ -1040,7 +1040,10 @@ int main(int argc, char *argv[])
     struct kv_handle * indexerHandle = malloc(sizeof(struct kv_handle));
     struct dkv_handle dkvHandle;
     dkvHandle.indexer = indexerHandle;
-    dkvHandle.serverHandles = handle;
+    for(int k = 0 ; k < NUM_SERVERS; k ++)
+    {    
+        dkvHandle.serverHandles[k] = handle[k];
+    }
     //get input for the server ip and port
     int numArgs = 1 + 2 + NUM_SERVERS*2;//prog name, indexer ip port, server ip ports
     char* usageMessage = "usage %s Indexer IP port ,Server IP port, ...\n";
