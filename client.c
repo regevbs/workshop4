@@ -1093,35 +1093,35 @@ int main(int argc, char *argv[])
     /* Test small size */
     assert(100 < MAX_TEST_SIZE);
     memset(send_buffer, 'a', 100);
-    assert(0 == set(dkv_handle, "1", send_buffer));
-    assert(0 == get(dkv_handle, "1", &recv_buffer));
+    assert(0 == set(dkvHandle, "1", send_buffer));
+    assert(0 == get(dkvHandle, "1", &recv_buffer));
     assert(0 == strcmp(send_buffer, recv_buffer));
     release(recv_buffer);
 
     /* Test logic */
-    assert(0 == get(dkv_handle, "1", &recv_buffer));
+    assert(0 == get(dkvHandle, "1", &recv_buffer));
     assert(0 == strcmp(send_buffer, recv_buffer));
     release(recv_buffer);
     memset(send_buffer, 'b', 100);
-    assert(0 == set(dkv_handle, "1", send_buffer));
+    assert(0 == set(dkvHandle, "1", send_buffer));
     memset(send_buffer, 'c', 100);
-    assert(0 == set(dkv_handle, "22", send_buffer));
+    assert(0 == set(dkvHandle, "22", send_buffer));
     memset(send_buffer, 'b', 100);
-    assert(0 == get(dkv_handle, "1", &recv_buffer));
+    assert(0 == get(dkvHandle, "1", &recv_buffer));
     assert(0 == strcmp(send_buffer, recv_buffer));
     release(recv_buffer);
 
     /* Test large size */
     memset(send_buffer, 'x', MAX_TEST_SIZE - 1);
-    assert(0 == set(dkv_handle, "1", send_buffer));
-    assert(0 == set(dkv_handle, "333", send_buffer));
-    assert(0 == get(dkv_handle, "1", &recv_buffer));
+    assert(0 == set(dkvHandle, "1", send_buffer));
+    assert(0 == set(dkvHandle, "333", send_buffer));
+    assert(0 == get(dkvHandle, "1", &recv_buffer));
     assert(0 == strcmp(send_buffer, recv_buffer));
     release(recv_buffer);
     
     
-    my_close(dkv_handle);
-    free(dkv_handle);
+    my_close(dkvHandle);
+    free(dkvHandle);
     return 0;
 }
     
