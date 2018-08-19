@@ -24,7 +24,7 @@
 #define MAX_TEST_SIZE (10 * EAGER_PROTOCOL_LIMIT)
 #define TEST_LOCATION "~/www/"
 #define MAX_SERVER_ENTRIES 1000
-#define NUM_SERVERS
+#define NUM_SERVERS 2
 typedef int bool;
 #define true 1
 #define false 0
@@ -677,7 +677,7 @@ int pp_wait_completions(struct kv_handle *handle, int iters,char ** answerBuffer
                 else if(gotten_packet->type == LOCATION)
                 {
                     *answerBuffer = malloc(sizeof(unsigned));
-                    memcpy(*answerBuffer,gotten_packet->location.selected_server,sizeof(unsigned));
+                    memcpy(*answerBuffer,&gotten_packet->location.selected_server,sizeof(unsigned));
                 }
                 pp_post_recv(ctx, 1);
                 rcnt = rcnt + 1;
@@ -700,7 +700,7 @@ int pp_wait_completions(struct kv_handle *handle, int iters,char ** answerBuffer
 };*/
 unsigned getServerNumFromIndexer(struct dkv_handle *dkv_h, const char *key)
 {
-    struct pingpong_context *ctx_indexer = dkv_h->indexer.ctx;
+    struct pingpong_context *ctx_indexer = dkv_h->indexer->ctx;
     struct packet *set_packet = (struct packet*)ctx_indexer->buf;
 
     unsigned packet_size = strlen(key) +sizeof(unsigned) + sizeof(struct packet);
@@ -772,7 +772,7 @@ int kv_set(struct kv_handle *kv_handle, const char *key, const char *value)
     pp_post_send(ctx, IBV_WR_RDMA_WRITE, packet_size, value, NULL, 0);// TODO (1LOC): replace with remote info for RDMA_WRITE from packet );
     return pp_wait_completions(kv_handle, 1,NULL);*/ // wait for both to complete 
 }
-int dkv_set(void *dkv_h, const char *key, const char *value, unsigned length)
+int dkv_set(struct dkv_handle *dkv_h, const char *key, const char *value, unsigned length)
  {
     unsigned serverToContact = getServerNumFromIndexer(dkv_h, key);
     return kv_set(dkv_h->serverHandles[serverToContact], key, value);
@@ -1034,8 +1034,8 @@ int dkv_close(struct dkv_handle *dkv_h)
 */
 int main(int argc, char *argv[])
 {
-    struct kv_server_address * server[NUM_SERVERS] =NUM_SERVERS * malloc(sizeof(struct kv_server_address));
-    struct kv_handle * handle[NUM_SERVERS] = NUM_SERVERS * malloc(sizeof(struct kv_handle));
+    struct kv_server_address * server[NUM_SERVERS] = malloc(NUM_SERVERS *sizeof(struct kv_server_address));
+    struct kv_handle * handle[NUM_SERVERS] = malloc(NUM_SERVERS *sizeof(struct kv_handle));
     struct kv_server_address * indexer = malloc(sizeof(struct kv_server_address));
     struct kv_handle * indexerHandle = malloc(sizeof(struct kv_handle));
     struct dkv_handle dkvHandle;
