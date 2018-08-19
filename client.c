@@ -1034,8 +1034,8 @@ int dkv_close(struct dkv_handle *dkv_h)
 */
 int main(int argc, char *argv[])
 {
-    struct kv_server_address * server[NUM_SERVERS] = malloc(NUM_SERVERS *sizeof(struct kv_server_address));
-    struct kv_handle * handle[NUM_SERVERS] = malloc(NUM_SERVERS *sizeof(struct kv_handle));
+    struct kv_server_address ** server = malloc(NUM_SERVERS *sizeof(struct kv_server_address));
+    struct kv_handle ** handle = malloc(NUM_SERVERS *sizeof(struct kv_handle));
     struct kv_server_address * indexer = malloc(sizeof(struct kv_server_address));
     struct kv_handle * indexerHandle = malloc(sizeof(struct kv_handle));
     struct dkv_handle dkvHandle;
