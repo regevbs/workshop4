@@ -1082,7 +1082,7 @@ int main(int argc, char *argv[])
     {
         return 0;
     }
-    free(indexer);*/
+    free(indexer);
         printf("done first part\n");
 
     for(int serverNum = 0; serverNum < NUM_SERVERS; serverNum++)
@@ -1095,8 +1095,9 @@ int main(int argc, char *argv[])
         }  
     }
     printf("done first part\n");
+    
     //dkv_open(server, indexer,dkvHandle);
-    free(indexer);
+    //free(indexer);
     free(server);
     /*
     int numArgs = 3;
