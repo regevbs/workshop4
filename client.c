@@ -1088,11 +1088,11 @@ int main(int argc, char *argv[])
         return 0;
     }
     free(indexer);
-        printf("indexer connected\n");
+    printf("indexer connected\n");
 
     for(int serverNum = 0; serverNum < NUM_SERVERS; serverNum++)
     {
-        printf("in\n");
+        //printf("in\n");
         printf("portnum = %d\n",atoi(argv[4 + 2*serverNum]));
         server[serverNum]->port = (short) atoi(argv[4 + 2*serverNum]);
         printf("servername = %s\n",argv[3 + 2*serverNum]);
@@ -1104,7 +1104,7 @@ int main(int argc, char *argv[])
         }
         free(server[serverNum]);
     }
-    printf("done first part\n");
+    //printf("done first part\n");
     
     //dkv_open(server, indexer,dkvHandle);
     //free(indexer);
@@ -1134,6 +1134,7 @@ int main(int argc, char *argv[])
     assert(100 < MAX_TEST_SIZE);
     memset(send_buffer, 'a', 100);
     assert(0 == set(dkvHandle, "1", send_buffer));
+    printf("set complete\n");
     assert(0 == get(dkvHandle, "1", &recv_buffer));
     assert(0 == strcmp(send_buffer, recv_buffer));
     release(recv_buffer);
