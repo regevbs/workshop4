@@ -681,6 +681,7 @@ int pp_wait_completions(struct kv_handle *handle, int iters,char ** answerBuffer
                     *answerBuffer = malloc(sizeof(char));
                     //memcpy(*answerBuffer,&gotten_packet->location.selected_server,sizeof(unsigned));
                     **answerBuffer = (char)gotten_packet->location.selected_server;
+                    
                 }
                 pp_post_recv(ctx, 1);
                 rcnt = rcnt + 1;
@@ -693,6 +694,7 @@ int pp_wait_completions(struct kv_handle *handle, int iters,char ** answerBuffer
 			}
 		}
 	}
+    printf("done working on packet\n");
 	return 0;
 }
 
@@ -727,7 +729,7 @@ unsigned getServerNumFromIndexer(struct dkv_handle *dkv_h, const char *key)
     {
         return -1;
     }
-    printf("server num recieved is %d\n",(int) **value);
+    printf("server num recieved is %d\n", **value);
     return (unsigned) **value;
 }
 
