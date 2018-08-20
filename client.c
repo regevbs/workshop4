@@ -892,6 +892,7 @@ void terminateServer(struct kv_handle * handle)
 //////////////////////
 int kv_open(struct kv_server_address *server, struct kv_handle *kv_handle)
 {
+    printf("a\n");
     struct ibv_device      **dev_list;
 	struct ibv_device	*ib_dev;
 	struct pingpong_context *context = malloc(sizeof(struct pingpong_context));
@@ -915,11 +916,11 @@ int kv_open(struct kv_server_address *server, struct kv_handle *kv_handle)
 	//struct ts_params	 ts;
 
 	srand48(getpid() * time(NULL));
-    
+    printf("a\n");
     portNum = (int)server->port;
     port = portNum;
     servername = server->servername;
-    
+    printf("a\n");
       //get our beloved device
     dev_list = ibv_get_device_list(NULL); //get devices available to this machine
 	if (!dev_list) {
@@ -931,22 +932,25 @@ int kv_open(struct kv_server_address *server, struct kv_handle *kv_handle)
         fprintf(stderr, "No IB devices found\n");
         return 1;
     }
+    printf("a\n");
     //Create the context for this connection
     //creates context on found device, registers memory of size.
     context = pp_init_ctx(ib_dev, EAGER_PROTOCOL_LIMIT, rx_depth, ib_port, use_event); //use_event (decides if we wait blocking for completion)
     if (!context)
         return 1;
-    
+    printf("a\n");
     if (pp_get_port_info(context->context, ib_port, &context->portinfo)) { //gets the port status and info (uses ibv_query_port)
             fprintf(stderr, "Couldn't get port info\n");
             return 1;
         }
+    printf("a\n");
     //Prepare to recieve messages. fill the recieve request queue of QP k
     routs = pp_post_recv(context, context->rx_depth); //post rx_depth recieve requests
         if (routs < context->rx_depth) {
             fprintf(stderr, "Couldn't post receive (%d)\n", routs);
             return 1;
         }
+    printf("a\n");
     //set my_dest for every QP, getting ready to connect them.
     my_dest.lid = context->portinfo.lid; //assigns lid to my dest
     if (context->portinfo.link_layer != IBV_LINK_LAYER_ETHERNET &&
@@ -954,6 +958,7 @@ int kv_open(struct kv_server_address *server, struct kv_handle *kv_handle)
         fprintf(stderr, "Couldn't get local LID\n");
         return 1;
     }
+    printf("a\n");
     //set the gid to 0, we are in the same subnet.
     memset(&my_dest.gid, 0, sizeof my_dest.gid); //zero the gid, we send in the same subnet
     my_dest.qpn = ((*context).qp)->qp_num; //gets the qp number
@@ -966,7 +971,7 @@ int kv_open(struct kv_server_address *server, struct kv_handle *kv_handle)
     rem_dest = pp_client_exch_dest(servername, port, &my_dest); //if youre a client - exchange data with server
     if (!rem_dest)
             return 1; 
-    
+    printf("a\n");
 
     
       inet_ntop(AF_INET6, &rem_dest->gid, gid, sizeof gid);
@@ -978,15 +983,16 @@ int kv_open(struct kv_server_address *server, struct kv_handle *kv_handle)
     if (pp_connect_ctx(context, ib_port, my_dest.psn, mtu, sl, rem_dest,
                     gidx))
             return 1; //connect to the server
-
+    printf("a\n");
     
    
     //Do client work
     
     kv_handle->ctx = context;
     ibv_free_device_list(dev_list);
+    printf("a\n");
     free(rem_dest);
-    
+    printf("a\n");
     return 0;//orig_main(server, EAGER_PROTOCOL_LIMIT, g_argc, g_argv, &kv_handle->ctx);
 }
 
