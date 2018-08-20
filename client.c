@@ -1078,7 +1078,7 @@ int main(int argc, char *argv[])
 
     indexer->port = (short) atoi(argv[2]);
     indexer->servername = strdupa(argv[1]);
-    /*if(kv_open(indexer,indexerHandle))
+    if(kv_open(indexer,indexerHandle))
     {
         return 0;
     }
@@ -1089,13 +1089,13 @@ int main(int argc, char *argv[])
     {
         server[serverNum]->port = (short) atoi(argv[4 + 2*serverNum]);
         server[serverNum]->servername = strdupa(argv[3 + 2*serverNum]);
-        /*if(kv_open(server[serverNum],handle[serverNum]))
+        if(kv_open(server[serverNum],handle[serverNum]))
         {
             return 0;
-        }  */
+        }  
     }
     printf("done first part\n");
-    dkv_open(server, indexer,dkvHandle);
+    //dkv_open(server, indexer,dkvHandle);
     free(indexer);
     free(server);
     /*
