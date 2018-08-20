@@ -599,6 +599,7 @@ int pp_wait_completions(struct kv_handle *handle, int iters,char ** answerBuffer
     struct pingpong_context* ctx = handle->ctx;
     int rcnt, scnt, num_cq_events, use_event = 0;
 	rcnt = scnt = 0;
+    printf("waiting completions\n");
 	while (rcnt + scnt < iters) {
 		struct ibv_wc wc[2];
 		int ne, i;
@@ -676,6 +677,7 @@ int pp_wait_completions(struct kv_handle *handle, int iters,char ** answerBuffer
                 }
                 else if(gotten_packet->type == LOCATION)
                 {
+                    printf("location packet arrived\n");
                     *answerBuffer = malloc(sizeof(unsigned));
                     memcpy(*answerBuffer,&gotten_packet->location.selected_server,sizeof(unsigned));
                 }
@@ -717,7 +719,7 @@ unsigned getServerNumFromIndexer(struct dkv_handle *dkv_h, const char *key)
     //printf("packet size is %d.\nchar after packet size = %c\nlast char in msg is = %c\n",packet_size,set_packet->eager_set_request.key_and_value[packet_size-sizeof(struct packet)],set_packet->eager_set_request.key_and_value[packet_size-1-sizeof(struct packet)]);
     //printf("packet type is %d\n",set_packet->type);
     pp_post_send(ctx_indexer, IBV_WR_SEND, packet_size, NULL,0, 0, 0); /* Sends the packet to the server */
-    //printf("packet sent\n");
+    printf("packet sent\n");
     char ** value;
     int retVal = pp_wait_completions(dkv_h->indexer, 2,value,NULL,0);
     if(retVal != 0)
