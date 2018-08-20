@@ -639,7 +639,7 @@ int handle_server_packets_only(struct kv_handle *handle, struct packet *packet)
         ;
         //printf("index not found T_T\n");
         int mod = packet->find.num_of_servers;
-        printf("got key %s\n",packet->find.key);
+        printf("got key %s\nNum servers: %d\n",packet->find.key,packet->find.num_of_servers);
         unsigned char* keyToFind = packet->find.key;
         printf("finding key %s\n",keyToFind);
         unsigned hashVal =(unsigned)( hash(keyToFind) % mod);
