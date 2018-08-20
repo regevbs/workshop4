@@ -717,6 +717,7 @@ unsigned getServerNumFromIndexer(struct dkv_handle *dkv_h, const char *key)
     
     memcpy(set_packet->find.key,key,strlen(key) + 1);
     set_packet->find.num_of_servers = NUM_SERVERS;
+    printf("finding key: %s\nnum servers: %d\n",set_packet->find.key,set_packet->find.num_of_servers );
     /* TODO (4LOC): fill in the rest of the get_packet */
     //printf("send %s\n",set_packet->eager_get_request.key);
     //printf("packet size is %d.\nchar after packet size = %c\nlast char in msg is = %c\n",packet_size,set_packet->eager_set_request.key_and_value[packet_size-sizeof(struct packet)],set_packet->eager_set_request.key_and_value[packet_size-1-sizeof(struct packet)]);
