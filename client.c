@@ -1101,13 +1101,14 @@ int main(int argc, char *argv[])
         if(kv_open(server[serverNum],handle[serverNum]))
         {
             return 0;
-        }  
+        }
+        free(server[serverNum]);
     }
     printf("done first part\n");
     
     //dkv_open(server, indexer,dkvHandle);
     //free(indexer);
-    free(server);
+    //free(server);
     /*
     int numArgs = 3;
     char* usageMessage = "usage %s Server IP port\n";
