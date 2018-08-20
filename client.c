@@ -1088,7 +1088,9 @@ int main(int argc, char *argv[])
     for(int serverNum = 0; serverNum < NUM_SERVERS; serverNum++)
     {
         printf("in\n");
+        printf("portnum = %d\n",atoi(argv[4 + 2*serverNum]));
         server[serverNum]->port = (short) atoi(argv[4 + 2*serverNum]);
+        printf("servername = %s\n",argv[3 + 2*serverNum]);
         server[serverNum]->servername = strdupa(argv[3 + 2*serverNum]);
         printf("server ip: %s\nserver port: %d",server[serverNum]->servername,(int) server[serverNum]->port);
         if(kv_open(server[serverNum],handle[serverNum]))
