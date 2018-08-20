@@ -678,9 +678,9 @@ int pp_wait_completions(struct kv_handle *handle, int iters,char ** answerBuffer
                 else if(gotten_packet->type == LOCATION)
                 {
                     printf("location packet arrived\n");
-                    //*answerBuffer = malloc(sizeof(unsigned));
+                    *answerBuffer = malloc(sizeof(char));
                     //memcpy(*answerBuffer,&gotten_packet->location.selected_server,sizeof(unsigned));
-                    *answerBuffer = gotten_packet->location.selected_server;
+                    **answerBuffer = (char)gotten_packet->location.selected_server;
                 }
                 pp_post_recv(ctx, 1);
                 rcnt = rcnt + 1;
@@ -727,8 +727,8 @@ unsigned getServerNumFromIndexer(struct dkv_handle *dkv_h, const char *key)
     {
         return -1;
     }
-    printf("server num recieved is %d\n",(int) *value);
-    return (unsigned) *value;
+    printf("server num recieved is %d\n",(int) **value);
+    return (unsigned) **value;
 }
 
 
