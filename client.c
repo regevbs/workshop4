@@ -927,6 +927,7 @@ int kv_open(struct kv_server_address *server, struct kv_handle *kv_handle)
 		perror("Failed to get IB devices list");
 		return 1;
 	}
+    printf("b\n");
     ib_dev = *dev_list; //chooses the first device by default
     if (!ib_dev) {
         fprintf(stderr, "No IB devices found\n");
