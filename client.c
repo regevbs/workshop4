@@ -997,6 +997,7 @@ int dkv_open(struct kv_server_address **servers, /* array of servers */
  struct dkv_handle *dkv_h)
  {
      printf("dkv open\n");
+     printf("indexer ip = %s\n indexer port = %d\n",indexer->servername,(int)indexer->port);
      kv_open(indexer,dkv_h->indexer);
      printf("done idx\n");
      for(int i= 0 ; i < NUM_SERVERS; i++)
