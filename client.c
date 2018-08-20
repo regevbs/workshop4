@@ -723,7 +723,7 @@ unsigned getServerNumFromIndexer(struct dkv_handle *dkv_h, const char *key)
     //printf("packet type is %d\n",set_packet->type);
     pp_post_send(ctx_indexer, IBV_WR_SEND, packet_size, NULL,0, 0, 0); /* Sends the packet to the server */
     printf("packet sent\n");
-    char ** value;
+    char ** value = malloc(sizeof(char*));
     int retVal = pp_wait_completions(dkv_h->indexer, 2,value,NULL,0);
     if(retVal != 0)
     {
