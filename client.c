@@ -1065,7 +1065,7 @@ int main(int argc, char *argv[])
     {    
         dkvHandle->serverHandles[k] = handle[k];
     }
-        printf("done first part\n");
+       
 
     //get input for the server ip and port
     int numArgs = 1 + 2 + NUM_SERVERS*2;//prog name, indexer ip port, server ip ports
@@ -1074,7 +1074,7 @@ int main(int argc, char *argv[])
        fprintf(stderr,usageMessage, argv[0]);
        exit(0);
     }
-        printf("done first part\n");
+        
 
     indexer->port = (short) atoi(argv[2]);
     indexer->servername = strdupa(argv[1]);
@@ -1083,10 +1083,11 @@ int main(int argc, char *argv[])
         return 0;
     }
     free(indexer);
-        printf("done first part\n");
+        printf("indexer connected\n");
 
     for(int serverNum = 0; serverNum < NUM_SERVERS; serverNum++)
     {
+        printf("in\n");
         server[serverNum]->port = (short) atoi(argv[4 + 2*serverNum]);
         server[serverNum]->servername = strdupa(argv[3 + 2*serverNum]);
         printf("server ip: %s\nserver port: %d",server[serverNum]->servername,(int) server[serverNum]->port);
