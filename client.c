@@ -1055,8 +1055,13 @@ int main(int argc, char *argv[])
     printf("b\n");
     */
     
-    struct kv_server_address ** server = malloc(NUM_SERVERS *sizeof(struct kv_server_address));
-    struct kv_handle ** handle = malloc(NUM_SERVERS *sizeof(struct kv_handle));
+    struct kv_server_address * server[NUM_SERVERS];// = malloc(NUM_SERVERS *sizeof(struct kv_server_address));
+    struct kv_handle * handle[NUM_SERVERS];// = malloc(NUM_SERVERS *sizeof(struct kv_handle));
+    for(int sNum = 0; sNum < NUM_SERVERS; sNum ++)
+    {
+        server[sNum] = malloc(sizeof(struct kv_server_address));
+        handle[sNum] = malloc(sizeof(struct kv_handle));
+    }
     struct kv_server_address * indexer = malloc(sizeof(struct kv_server_address));
     struct kv_handle * indexerHandle = malloc(sizeof(struct kv_handle));
     struct dkv_handle * dkvHandle = malloc(sizeof(struct dkv_handle));
