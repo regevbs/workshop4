@@ -1045,14 +1045,14 @@ int dkv_close(struct dkv_handle *dkv_h)
 */
 int main(int argc, char *argv[])
 {
-    /*struct ibv_device      **dev_list;
+    struct ibv_device      **dev_list;
     dev_list = ibv_get_device_list(NULL); //get devices available to this machine
 	if (!dev_list) {
 		perror("Failed to get IB devices list");
 		return 1;
 	}
     printf("device gotten is: %s\n",ibv_get_device_name(*dev_list));
-    printf("b\n");*/
+    printf("b\n");
     
     
     struct kv_server_address ** server = malloc(NUM_SERVERS *sizeof(struct kv_server_address));
