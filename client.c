@@ -24,7 +24,7 @@
 #define MAX_TEST_SIZE (10 * EAGER_PROTOCOL_LIMIT)
 #define TEST_LOCATION "~/www/"
 #define MAX_SERVER_ENTRIES 1000
-#define NUM_SERVERS 2
+#define NUM_SERVERS 1
 typedef int bool;
 #define true 1
 #define false 0
