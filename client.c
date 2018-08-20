@@ -998,8 +998,10 @@ int dkv_open(struct kv_server_address **servers, /* array of servers */
  {
      
      kv_open(indexer,dkv_h->indexer);
+     printf("done idx\n");
      for(int i= 0 ; i < NUM_SERVERS; i++)
      {
+         printf("starting server %d\n",i);
          kv_open(servers[i],dkv_h->serverHandles[i]);
      }
  }
