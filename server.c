@@ -779,7 +779,7 @@ int handle_server_packets_only(struct kv_handle *handle, struct packet *packet)
         response_size = sizeof(struct packet);
         //int i;
         //printf("REDN SET REQUEST$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n");
-        //printf("set string: %s\n",packet->rndv_set_request.key);
+        printf("set string: %s\n",packet->rndv_set_request.key);
         for ( i = 0; i < handle->entryLen; i = i +1 )
         {
             if(strcmp((handle->keys)[i],packet->rndv_set_request.key) == 0) //means we found the key
@@ -822,13 +822,14 @@ int handle_server_packets_only(struct kv_handle *handle, struct packet *packet)
         }
         else
         {
-            //printf("no index found\n");
+            printf("no index found\n");
             (handle->keyLen)[i] = packet->rndv_set_request.keyLen;
             (handle->keys)[i] = (char*) malloc((handle->keyLen)[i]);
             (handle->valueLen)[i] = packet->rndv_set_request.valueLen;
             handle->entryLen = handle->entryLen + 1;
             memcpy((handle->keys)[i],packet->eager_set_request.key_and_value,packet->eager_set_request.keyLen);
             //TODO reg a new MR here.
+            printf("aloocing\n");
             (handle->values)[i] = (char*) malloc((handle->valueLen)[i]);
             handle->registeredMR[i] = ibv_reg_mr(ctx->pd, handle->values[i],
                                                     handle->valueLen[i], IBV_ACCESS_LOCAL_WRITE |
@@ -837,13 +838,13 @@ int handle_server_packets_only(struct kv_handle *handle, struct packet *packet)
             handle->rkeyValue[i] = (uint32_t) handle->registeredMR[i]->rkey;
             handle->numRegistered = handle->numRegistered + 1;
             //TODO create the packet to return for the client to write into this MR.
-           // printf("server: r_add = %d\nr_key = %d\n",handle->remote_addresses[i],handle->rkeyValue[i]);
+            printf("server: r_add = %d\nr_key = %d\n",handle->remote_addresses[i],handle->rkeyValue[i]);
 
             response_packet->rndv_get_response.remote_address = handle->remote_addresses[i];
             response_packet->rndv_get_response.rkey = handle->rkeyValue[i];
 
         }
-       // printf("responding REDN_SET_RESPONSE%%%%%%%%%%%%%%%%%%%%%%%%%\n");
+        printf("responding REDN_SET_RESPONSE%%%%%%%%%%%%%%%%%%%%%%%%%\n");
         break;
 #ifdef EX4
     case FIND: /* TODO (2LOC): use some hash function */
