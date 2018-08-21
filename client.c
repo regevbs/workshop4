@@ -708,7 +708,7 @@ unsigned getServerNumFromIndexer(struct dkv_handle *dkv_h, const char *key)
     struct pingpong_context *ctx_indexer = dkv_h->indexer->ctx;
     struct packet *set_packet = (struct packet*)ctx_indexer->buf;
 
-    unsigned packet_size = strlen(key) +1 +sizeof(unsigned) + sizeof(struct packet);
+    unsigned packet_size = strlen(key) +1 +2*sizeof(unsigned) + sizeof(struct packet);
     
     //printf("type is %d\n",EAGER_GET_REQUEST);
     set_packet->type = FIND;
@@ -720,7 +720,7 @@ unsigned getServerNumFromIndexer(struct dkv_handle *dkv_h, const char *key)
     printf("finding key: %s\nnum servers: %d\n",set_packet->find.key,set_packet->find.num_of_servers );
     /* TODO (4LOC): fill in the rest of the get_packet */
     //printf("send %s\n",set_packet->eager_get_request.key);
-    //printf("packet size is %d.\nchar after packet size = %c\nlast char in msg is = %c\n",packet_size,set_packet->eager_set_request.key_and_value[packet_size-sizeof(struct packet)],set_packet->eager_set_request.key_and_value[packet_size-1-sizeof(struct packet)]);
+    printf("packet size is %d.\nchar after packet size = %c\nlast char in msg is = %c\n",packet_size,set_packet->eager_set_request.key_and_value[packet_size-sizeof(struct packet)],set_packet->eager_set_request.key_and_value[packet_size-1-sizeof(struct packet)]);
     //printf("packet type is %d\n",set_packet->type);
     pp_post_send(ctx_indexer, IBV_WR_SEND, packet_size, NULL,0, 0, 0); /* Sends the packet to the server */
     printf("packet sent\n");

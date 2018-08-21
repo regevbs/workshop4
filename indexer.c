@@ -111,6 +111,7 @@ struct packet {
 		/* TODO - maybe there are more packet types? */
 					
         struct {
+            unsigned keyLen;
             unsigned num_of_servers;
             char key[0];
         } find;
