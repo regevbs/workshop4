@@ -834,15 +834,22 @@ int handle_server_packets_only(struct kv_handle *handle, struct packet *packet)
             handle->registeredMR[i] = ibv_reg_mr(ctx->pd, handle->values[i],
                                                     handle->valueLen[i], IBV_ACCESS_LOCAL_WRITE |
                                                     IBV_ACCESS_REMOTE_WRITE | IBV_ACCESS_REMOTE_READ); 
-            handle->remote_addresses[i] = (uint64_t) handle->registeredMR[i]->addr;
-            handle->rkeyValue[i] = (uint32_t) handle->registeredMR[i]->rkey;
+            if(handle->registeredMR[i])
+            {
+                handle->remote_addresses[i] = (uint64_t) handle->registeredMR[i]->addr;
+                handle->rkeyValue[i] = (uint32_t) handle->registeredMR[i]->rkey;
+            }
+            else
+            {
+                printf("crap!\n");
+            }
             handle->numRegistered = handle->numRegistered + 1;
             //TODO create the packet to return for the client to write into this MR.
             printf("server: r_add = %d\nr_key = %d\n",handle->remote_addresses[i],handle->rkeyValue[i]);
 
             response_packet->rndv_get_response.remote_address = handle->remote_addresses[i];
             response_packet->rndv_get_response.rkey = handle->rkeyValue[i];
-
+            printf("done here\n");
         }
         
         break;
