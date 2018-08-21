@@ -862,7 +862,7 @@ int handle_server_packets_only(struct kv_handle *handle, struct packet *packet)
     default:
         break;
     }
-	
+	printf("resp size is %d\n",response_size);
 	if (response_size) {
         printf("responding%%%%%%%%%%%%%%%%%%%%%%%%%\nresponse size is %d\npacket is sized %d\n",response_size,sizeof(struct packet));
 		pp_post_send(handle->ctx, IBV_WR_SEND, response_size, NULL, NULL, 0);
