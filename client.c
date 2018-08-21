@@ -24,7 +24,7 @@
 #define MAX_TEST_SIZE (10 * EAGER_PROTOCOL_LIMIT)
 #define TEST_LOCATION "~/www/"
 #define MAX_SERVER_ENTRIES 1000
-#define NUM_SERVERS 1
+#define NUM_SERVERS 2
 typedef int bool;
 #define true 1
 #define false 0
@@ -783,7 +783,7 @@ int dkv_set(struct dkv_handle *dkv_h, const char *key, const char *value)//, uns
  {
     printf("dkv setting\n");
     unsigned serverToContact = getServerNumFromIndexer(dkv_h, key);
-    printf("setting:\nkey: %s \nvalue: %s \nto server: %d\n",key,value,(int)serverToContact);
+    //printf("setting:\nkey: %s \nvalue: %s \nto server: %d\n",key,value,(int)serverToContact);
     return kv_set(dkv_h->serverHandles[serverToContact], key, value);
  }
 int kv_get(struct kv_handle *kv_handle, const char *key, char **value)
