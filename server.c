@@ -589,6 +589,7 @@ static int pp_post_recv(struct pingpong_context *ctx, int n)
 
 static int pp_post_send(struct pingpong_context *ctx, enum ibv_wr_opcode opcode, unsigned size, const char *local_ptr, void *remote_ptr, uint32_t remote_key)
 {
+    printf("1\n");
 	struct ibv_sge list = {
 		.addr	= (uintptr_t) (local_ptr ? local_ptr : ctx->buf),
 		.length = size,
@@ -603,11 +604,12 @@ static int pp_post_send(struct pingpong_context *ctx, enum ibv_wr_opcode opcode,
 		.next       = NULL
 	};
 	struct ibv_send_wr *bad_wr;
-	
+	printf("2\n");
 	if (remote_ptr) {
 		wr.wr.rdma.remote_addr = (uintptr_t) remote_ptr;
 		wr.wr.rdma.rkey = remote_key;
 	}
+    printf("3\n");
     return ibv_post_send((*ctx).qp, &wr, &bad_wr);
 	//return ibv_post_send(ctx->qp, &wr, &bad_wr);
 }
