@@ -708,7 +708,7 @@ unsigned getServerNumFromIndexer(struct dkv_handle *dkv_h, const char *key)
     struct pingpong_context *ctx_indexer = dkv_h->indexer->ctx;
     struct packet *set_packet = (struct packet*)ctx_indexer->buf;
 
-    unsigned packet_size = strlen(key) +1 +2*sizeof(unsigned) + sizeof(struct packet);
+    unsigned packet_size = strlen(key) +1 /*+2*sizeof(unsigned)*/ + sizeof(struct packet);
     
     //printf("type is %d\n",EAGER_GET_REQUEST);
     set_packet->type = FIND;
