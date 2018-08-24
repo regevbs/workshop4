@@ -1135,6 +1135,8 @@ int main(int argc, char *argv[])
     assert(100 < MAX_TEST_SIZE);
     memset(send_buffer, 'a', 100);
     assert(0 == set(dkvHandle, "1", send_buffer));
+    memset(send_buffer, 'a', 100);
+    assert(0 == set(dkvHandle, "33", send_buffer));
     printf("set complete\n");
     assert(0 == get(dkvHandle, "1", &recv_buffer));
     assert(0 == strcmp(send_buffer, recv_buffer));
