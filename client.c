@@ -1034,7 +1034,7 @@ int dkv_open(struct kv_server_address **servers, /* array of servers */
         {
             return 0;
         }
-        free(server[serverNum]);
+        free(servers[serverNum]);
     }
      
  }
