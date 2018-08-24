@@ -826,7 +826,7 @@ int handle_server_packets_only(struct kv_handle *handle, struct packet *packet)
             (handle->keys)[i] = (char*) malloc((handle->keyLen)[i]);
             (handle->valueLen)[i] = packet->rndv_set_request.valueLen;
             handle->entryLen = handle->entryLen + 1;
-            memcpy((handle->keys)[i],packet->eager_set_request.key_and_value,packet->eager_set_request.keyLen);
+            memcpy((handle->keys)[i],packet->rndv_set_request.key,packet->rndv_set_request.keyLen);
             //TODO reg a new MR here.
             printf("aloocing %d memory\n",(handle->valueLen)[i]);
             (handle->values)[i] = (char*) malloc((handle->valueLen)[i]);
