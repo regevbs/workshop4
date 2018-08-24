@@ -1158,8 +1158,8 @@ int main(int argc, char *argv[])
     assert(0 == set(dkvHandle, "1", send_buffer));
     assert(0 == get(dkvHandle, "1", &recv_buffer));
     assert(0 == set(dkvHandle, "33", send_buffer));
-    assert(0 == get(dkvHandle, "1", &recv_buffer));
-    assert(0 == set(dkvHandle, "33", send_buffer));
+    //assert(0 == get(dkvHandle, "1", &recv_buffer));
+    //assert(0 == set(dkvHandle, "33", send_buffer));
     assert(0 == strcmp(send_buffer, recv_buffer));
     
     release(recv_buffer);
