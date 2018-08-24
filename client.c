@@ -1013,21 +1013,11 @@ int dkv_open(struct kv_server_address **servers, /* array of servers */
  struct kv_server_address *indexer, /* single indexer */
  struct dkv_handle *dkv_h)
  {
-     printf("dkv open\n");
-     //printf("indexer ip = %s\n indexer port = %d\n",indexer->servername,(int)indexer->port);
-     /*kv_open(indexer,dkv_h->indexer);
-     printf("done idx\n");
-     for(int i= 0 ; i < NUM_SERVERS; i++)
-     {
-         printf("starting server %d\n",i);
-         kv_open(servers[i],dkv_h->serverHandles[i]);
-     }*/
      if(kv_open(indexer,dkv_h->indexer))
     {
         return 0;
     }
     free(indexer);
-    printf("indexer connected\n");
     for(int serverNum = 0; serverNum < NUM_SERVERS; serverNum++)
     {
         if(kv_open(servers[serverNum],dkv_h->serverHandles[serverNum]))
@@ -1099,12 +1089,7 @@ int main(int argc, char *argv[])
 
     indexer->port = (short) atoi(argv[2]);
     indexer->servername = strdupa(argv[1]);
-    /*if(kv_open(indexer,indexerHandle))
-    {
-        return 0;
-    }
-    free(indexer);
-    printf("indexer connected\n");*/
+    
 
     for(int serverNum = 0; serverNum < NUM_SERVERS; serverNum++)
     {
@@ -1114,35 +1099,11 @@ int main(int argc, char *argv[])
         printf("servername = %s\n",argv[3 + 2*serverNum]);
         server[serverNum]->servername = strdupa(argv[3 + 2*serverNum]);
         printf("server ip: %s\nserver port: %d",server[serverNum]->servername,(int) server[serverNum]->port);
-        /*if(kv_open(server[serverNum],handle[serverNum]))
-        {
-            return 0;
-        }
-        free(server[serverNum]);*/
+        
     }
-    //printf("done first part\n");
     
     dkv_open(server, indexer,dkvHandle);
-    //free(indexer);
-    //free(server);
-    /*
-    int numArgs = 3;
-    char* usageMessage = "usage %s Server IP port\n";
-	if (argc < numArgs) {
-       fprintf(stderr,usageMessage, argv[0]);
-       exit(0);
-    }
-    int portNum = atoi(argv[numArgs - 1]);
-    int port = portNum;
-    servername = strdupa(argv[1]);
-    server->servername = servername;
-    server->port = (short) port;
-    if(kv_open(server,handle))
-    {
-        return 0;
-    }
-    free(server);
-    */
+    
     char send_buffer[MAX_TEST_SIZE] = {0};
     char *recv_buffer;
     printf("done setup\n");
