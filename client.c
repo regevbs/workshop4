@@ -1154,9 +1154,10 @@ int main(int argc, char *argv[])
     release(recv_buffer);
 
     /* Test large size */
-    memset(send_buffer, 'x', MAX_TEST_SIZE - 1);
+    memset(send_buffer, 'x', MAX_TEST_SIZE/2);
     assert(0 == set(dkvHandle, "1", send_buffer));
     assert(0 == get(dkvHandle, "1", &recv_buffer));
+    memset(send_buffer, 'b', MAX_TEST_SIZE/2);
     assert(0 == set(dkvHandle, "33", send_buffer));
     //assert(0 == get(dkvHandle, "1", &recv_buffer));
     //assert(0 == set(dkvHandle, "33", send_buffer));
