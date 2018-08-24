@@ -1,3 +1,4 @@
+#define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -15,7 +16,7 @@
 #define LOG        44
 #define FORBIDDEN 403
 #define NOTFOUND  404
-#define _GNU_SOURCE
+
 #include <infiniband/verbs.h>
 #include <linux/types.h>
 //#include "config.h"
