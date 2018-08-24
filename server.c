@@ -805,7 +805,7 @@ int handle_server_packets_only(struct kv_handle *handle, struct packet *packet)
             free(handle->values[i]);
            // printf("free done\n");
             //TODO reg a new MR here.
-           // printf("server regs memory of size: %d\n@@@@@@@@@@@$$$$$$$$$$$%%%%%%%%\n",(handle->valueLen)[i]);
+            printf("server regs memory of size: %d\n@@@@@@@@@@@$$$$$$$$$$$%%%%%%%%\n",(handle->valueLen)[i]);
             (handle->values)[i] = (char*) malloc((handle->valueLen)[i]); //this is the address for the new MR.
             handle->registeredMR[i] = ibv_reg_mr(ctx->pd, handle->values[i],
                                                     handle->valueLen[i], IBV_ACCESS_LOCAL_WRITE |
@@ -821,14 +821,14 @@ int handle_server_packets_only(struct kv_handle *handle, struct packet *packet)
         }
         else
         {
-            printf("no index found\n");
+            //printf("no index found\n");
             (handle->keyLen)[i] = packet->rndv_set_request.keyLen;
             (handle->keys)[i] = (char*) malloc((handle->keyLen)[i]);
             (handle->valueLen)[i] = packet->rndv_set_request.valueLen;
             handle->entryLen = handle->entryLen + 1;
             memcpy((handle->keys)[i],packet->eager_set_request.key_and_value,packet->eager_set_request.keyLen);
             //TODO reg a new MR here.
-            printf("aloocing\n");
+            printf("aloocing %d memory\n",(handle->valueLen)[i]);
             (handle->values)[i] = (char*) malloc((handle->valueLen)[i]);
             handle->registeredMR[i] = ibv_reg_mr(ctx->pd, handle->values[i],
                                                     handle->valueLen[i], IBV_ACCESS_LOCAL_WRITE |
@@ -866,8 +866,8 @@ int handle_server_packets_only(struct kv_handle *handle, struct packet *packet)
         //printf("responding%%%%%%%%%%%%%%%%%%%%%%%%%\nresponse size is %d\npacket is sized %d\n",response_size,sizeof(struct packet));
 		pp_post_send(handle->ctx, IBV_WR_SEND, response_size, NULL, NULL, 0);
         //sleep(3);
-        printf("weird");
-        printf("server: buffer has value: %s\n",handle->values[i]);
+        //printf("weird");
+        //printf("server: buffer has value: %s\n",handle->values[i]);
     }
     
 }
