@@ -1159,6 +1159,7 @@ void recursive_fill_kv(char const* dirname, struct dkv_handle *dkv_h)
     struct dirent *curr_ent;
     DIR* dirp = opendir(dirname);
     if (dirp == NULL) {
+        printf("dir %s didn't open\n",dirname);
         return;
     }
 
@@ -1187,6 +1188,7 @@ void recursive_fill_kv(char const* dirname, struct dkv_handle *dkv_h)
                 free(path);
             }
     }
+    printf("done fill kv for dir %s\n",dirname);
     closedir(dirp);
  }
 
@@ -1220,7 +1222,7 @@ int main(int argc, char **argv)
        fprintf(stderr,usageMessage, argv[0]);
        exit(0);
     }
-    
+    printf("done getting input\n");
     
     /////////////////////////////
 	/*if( argc < 3  || argc > 3 || !strcmp(argv[1], "-?") ) {
