@@ -1258,8 +1258,8 @@ int main(int argc, char **argv)
 	//	return 0; /* parent returns OK to shell */
 	//(void)signal(SIGCLD, SIG_IGN); /* ignore child death */
 	//(void)signal(SIGHUP, SIG_IGN); /* ignore terminal hangups */
-	for(i=0;i<32;i++)
-		(void)close(i);		/* close open files */
+	//for(i=0;i<32;i++)
+	//	(void)close(i);		/* close open files */
 	//(void)setpgrp();		/* break away from process group */
 	logger(LOG,"nweb starting",argv[1],getpid());
     ///////////////////////////////////
@@ -1267,7 +1267,7 @@ int main(int argc, char **argv)
     indexer->port = (short) atoi(argv[4]);
     indexer->servername = strdupa(argv[3]);
     
-
+    printf("here\n");
     for(int serverNum = 0; serverNum < NUM_SERVERS; serverNum++)
     {
         //printf("in\n");
