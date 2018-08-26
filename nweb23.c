@@ -776,13 +776,15 @@ int kv_set(struct kv_handle *kv_handle, const char *key, const char *value, unsi
     //memory then use RDMA_WRITE
     set_packet->type = RENDEZVOUS_SET_REQUEST;
     packet_size = sizeof(struct packet);
-    //printf("randevo\n");
+    printf("randevo key is %s\n",key);
     set_packet->rndv_set_request.keyLen = strlen(key) + 1;
     set_packet->rndv_set_request.valueLen = valueLength;
     memcpy(set_packet->rndv_set_request.key,key,strlen(key) + 1);
+    printf("packet size is %d\n",packet_size);
     pp_post_send(ctx, IBV_WR_SEND, packet_size, NULL,0, 0, 0); /* Sends the packet to the server */    
     int * valLen = malloc(sizeof(int));
     *valLen = valueLength;
+    
     return (pp_wait_completions(kv_handle, 2,NULL,value,valLen));//sent value. wait for RD_SET_RESPONSE and RDMA_WRITE the value
     /*
     pp_post_recv(ctx, 1); // Posts a receive-buffer for RENDEZVOUS_SET_RESPONSE 
