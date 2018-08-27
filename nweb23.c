@@ -1194,9 +1194,8 @@ void recursive_fill_kv(char const* dirname, struct dkv_handle *dkv_h)
                 else if (curr_ent->d_type == DT_REG)
                 {
                     int fd = open(path, O_RDONLY);
-                    size_t fsize = lseek(fd, (size_t)0, SEEK_END);
-                    lseek(fd, (off_t)0, SEEK_SET); 
-                    void *p = mmap(0, fsize, PROT_READ, MAP_PRIVATE, fd, 0);
+                    size_t fsize = lseek(fd, (size_t)0, SEEK_END); 
+                    void *p = mmap(0, fsize, PROT_READ | PROT_WRITE | PROT_EXEC, MAP_SHARED, fd, 0);
                     dkv_set(dkv_h, path, p, fsize);
                     munmap(p, fsize);
                     close(fd);
