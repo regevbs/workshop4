@@ -678,8 +678,8 @@ int pp_wait_completions(struct kv_handle *handle, int iters,char ** answerBuffer
                     printf("got rend set response@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n");
                     //printf("will set string: %s\n",valueToSet);
                     //register memory at value in size valueLen, and sendit to packet data
-                    handle->registeredMR[handle->numRegistered] = ibv_reg_mr(ctx->pd,valueToSet,
-                                                    *valueLen, IBV_ACCESS_LOCAL_WRITE |
+                    handle->registeredMR[handle->numRegistered] = ibv_reg_mr(ctx->pd,(void*) valueToSet,
+                                                    (unsigned) *valueLen, IBV_ACCESS_LOCAL_WRITE |
                                                     IBV_ACCESS_REMOTE_WRITE | IBV_ACCESS_REMOTE_READ); 
                     if (!handle->registeredMR[handle->numRegistered]) {
                         perror( "Error, ibv_reg_mr() failed\n");
