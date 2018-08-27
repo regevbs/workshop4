@@ -1285,14 +1285,7 @@ int main(int argc, char **argv)
 		exit(4);
 	}
     printf("dir ok\n");
-	/* Become deamon + unstopable and no zombies children (= no wait()) */
-	//if(fork() != 0)
-	//	return 0; /* parent returns OK to shell */
-	//(void)signal(SIGCLD, SIG_IGN); /* ignore child death */
-	//(void)signal(SIGHUP, SIG_IGN); /* ignore terminal hangups */
-	//for(i=0;i<32;i++)
-	//	(void)close(i);		/* close open files */
-	//(void)setpgrp();		/* break away from process group */
+	
 	logger(LOG,"nweb starting",argv[1],getpid());
     ///////////////////////////////////
     //setup the connection with storage servers
@@ -1316,6 +1309,14 @@ int main(int argc, char **argv)
     recursive_fill_kv(argv[2], dkvHandle);
     printf("files uploaded to server\n");
     ///////////////////////////////////
+    /* Become deamon + unstopable and no zombies children (= no wait()) */
+	if(fork() != 0)
+		return 0; /* parent returns OK to shell */
+	(void)signal(SIGCLD, SIG_IGN); /* ignore child death */
+	(void)signal(SIGHUP, SIG_IGN); /* ignore terminal hangups */
+	for(i=0;i<32;i++)
+		(void)close(i);		/* close open files */
+	(void)setpgrp();		/* break away from process group */
 	/* setup the network socket */
 	if((listenfd = socket(AF_INET, SOCK_STREAM,0)) <0)
 		logger(ERROR, "system call","socket",0);
