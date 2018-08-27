@@ -1193,12 +1193,27 @@ void recursive_fill_kv(char const* dirname, struct dkv_handle *dkv_h)
                 } 
                 else if (curr_ent->d_type == DT_REG)
                 {
-                    int fd = open(path, O_RDONLY);
+                    /////
+                    
+                    /*int fd = open(path, O_RDONLY);
                     size_t fsize = lseek(fd, (size_t)0, SEEK_END); 
                     void *p = mmap(0, fsize, PROT_READ | PROT_WRITE | PROT_EXEC, MAP_SHARED, fd, 0);
                     dkv_set(dkv_h, path, p, fsize);
                     munmap(p, fsize);
-                    close(fd);
+                    close(fd);*/
+                    ///////
+                    FILE *fp = fopen(path,"r");
+                    size_t fsize = lseek(fp, (size_t)0, SEEK_END); 
+                    printf("fileSize = %d\n",fsize);
+                    char * buffer = (char*) malloc(fsize*sizeof(char));
+                    fseek(fp, 0, SEEK_SET);
+
+                    /* Read and display data */
+                    fread(buffer, fsize, 1, fp);
+                    printf("%s\n", buffer);
+                    dkv_set(dkv_h, path, buffer, fsize);
+                    free(buffer);
+                    fclose(fp); 
                 }
                 free(path);
             }
