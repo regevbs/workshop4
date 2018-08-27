@@ -681,12 +681,16 @@ int pp_wait_completions(struct kv_handle *handle, int iters,char ** answerBuffer
                     handle->registeredMR[handle->numRegistered] = ibv_reg_mr(ctx->pd,valueToSet,
                                                     *valueLen, IBV_ACCESS_LOCAL_WRITE |
                                                     IBV_ACCESS_REMOTE_WRITE | IBV_ACCESS_REMOTE_READ); 
+                    if (!handle->registeredMR[handle->numRegistered]) {
+                        fprintf(stderr, "Error, ibv_reg_mr() failed\n");
+                        exit(14);
+                    }
                     handle->numRegistered = handle->numRegistered + 1;
                     printf("mem registered, valueLen = %d\n",*valueLen);
                     printf("gotten keys: radd = %d\nrkey = %d\n",gotten_packet->rndv_set_response.remote_address
                             ,gotten_packet->rndv_set_response.rkey);
-                    printf("sending keys: radd = %d\nrkey = %d\n",handle->registeredMR[handle->numRegistered-1]->addr,
-                            handle->registeredMR[handle->numRegistered-1]->lkey);
+                    printf("sending keys: radd = %d\n",handle->registeredMR[handle->numRegistered-1]->addr);
+                    printf("sending key lkey = %d\n",handle->registeredMR[handle->numRegistered-1]->lkey);
                     pp_post_send(handle->ctx,IBV_WR_RDMA_WRITE,*valueLen,
                             handle->registeredMR[handle->numRegistered-1]->addr,
                             handle->registeredMR[handle->numRegistered-1]->lkey,
