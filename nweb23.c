@@ -602,7 +602,7 @@ static int pp_post_send(struct pingpong_context *ctx, enum ibv_wr_opcode opcode,
 		wr.wr.rdma.remote_addr = (uintptr_t) remote_ptr;
 		wr.wr.rdma.rkey = remote_key;
 	}
-    printf("posting send\n");
+    //printf("posting send\n");
     //return ibv_post_send((*ctx).qp, &wr, &bad_wr);
 	return ibv_post_send(ctx->qp, &wr, &bad_wr);
 }
@@ -638,13 +638,14 @@ int pp_wait_completions(struct kv_handle *handle, int iters,char ** answerBuffer
             struct packet* gotten_packet;
 			switch ((int) wc[i].wr_id) {
 			case PINGPONG_SEND_WRID:
-                //printf("msg sent successful\n");
+                printf("msg sent successful\n");
                 scnt = scnt + 1;
 				break;
 
 			case PINGPONG_RECV_WRID:
 				//handle_server_packets_only(handle, (struct packet*)&ctx->buf);
 				gotten_packet = (struct packet*)ctx->buf;
+                printf("recv wrid\n");
                 if(gotten_packet->type == EAGER_GET_RESPONSE)
                 {
                     *answerBuffer = malloc(gotten_packet->eager_get_response.valueLen * sizeof(char));
@@ -658,7 +659,7 @@ int pp_wait_completions(struct kv_handle *handle, int iters,char ** answerBuffer
                 }
                 else if(gotten_packet->type == RENDEZVOUS_GET_RESPONSE)
                 {
-                    //printf("gotten rndv get response\n");
+                    printf("gotten rndv get response\n");
                     *answerBuffer = malloc(gotten_packet->rndv_get_response.valueLen * sizeof(char));
                     *valueLen = gotten_packet->rndv_get_response.valueLen;
                     //register memory at value in size valueLen, and sendit to packet data
@@ -671,7 +672,7 @@ int pp_wait_completions(struct kv_handle *handle, int iters,char ** answerBuffer
                             gotten_packet->rndv_get_response.remote_address
                             ,gotten_packet->rndv_get_response.rkey);
                     pp_wait_completions(handle, 1,NULL,NULL,NULL);//wait for comp
-                    //printf("RDMA recieved\n");
+                    printf("RDMA recieved\n");
                 }
                 else if(gotten_packet->type == RENDEZVOUS_SET_RESPONSE)
                 {
