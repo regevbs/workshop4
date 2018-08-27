@@ -780,7 +780,7 @@ int kv_set(struct kv_handle *kv_handle, const char *key, const char *value, unsi
     set_packet->rndv_set_request.keyLen = strlen(key) + 1;
     set_packet->rndv_set_request.valueLen = valueLength;
     memcpy(set_packet->rndv_set_request.key,key,strlen(key) + 1);
-    packet_size = strlen(key) + 1 + valueLength + sizeof(struct packet);
+    packet_size = strlen(key) + 1 + sizeof(struct packet);
     printf("packet size is %d\n",packet_size);
     pp_post_send(ctx, IBV_WR_SEND, packet_size, NULL,0, 0, 0); /* Sends the packet to the server */    
     int * valLen = malloc(sizeof(int));
