@@ -57,10 +57,8 @@ enum packet_type {
     RENDEZVOUS_SET_REQUEST,
     RENDEZVOUS_SET_RESPONSE,
     TERMINATE,
-#ifdef EX4
     FIND,
     LOCATION,
-#endif
 };
 struct packet {
     enum packet_type type; /* What kind of packet/protocol is this */
@@ -81,9 +79,8 @@ struct packet {
 
         /* EAGER PROTOCOL PACKETS */
         struct {
-#ifdef EX4
+
             unsigned value_length; /* value is binary, so needs to have length! */
-#endif
             unsigned keyLen;
             unsigned valueLen;
             char key_and_value[0]; /* null terminator between key and value */
@@ -613,7 +610,7 @@ int pp_wait_completions(struct kv_handle *handle, int iters,char ** answerBuffer
     struct pingpong_context* ctx = handle->ctx;
     int rcnt, scnt, num_cq_events, use_event = 0;
 	rcnt = scnt = 0;
-    printf("waiting completions\n");
+    printf("waiting completions %d\n",iters);
 	while (rcnt + scnt < iters) {
 		struct ibv_wc wc[2];
 		int ne, i;
@@ -624,6 +621,7 @@ int pp_wait_completions(struct kv_handle *handle, int iters,char ** answerBuffer
 				fprintf(stderr, "poll CQ failed %d\n", ne);
 				return 1;
 			}
+            printf("WIL");
 
 		} while (ne < 1);
 
@@ -860,21 +858,13 @@ void dkv_release(char *value)
 }
 
 
-#ifdef EX3
-#define my_open  kv_open
-#define set      kv_set
-#define get      kv_get
-#define release  kv_release
-#define my_close kv_close
-#endif /* EX3 */
 
-#ifdef EX4
 #define my_open  dkv_open
 #define set      dkv_set
 #define get      dkv_get
 #define release  dkv_release
 #define my_close dkv_close
-#endif /* EX4 */
+
 
 
 void terminateServer(struct kv_handle * handle)
