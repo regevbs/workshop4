@@ -608,7 +608,7 @@ static int pp_post_send(struct pingpong_context *ctx, enum ibv_wr_opcode opcode,
 }
 
 ////////////////////
-int pp_wait_completions(struct kv_handle *handle, int iters,char ** answerBuffer,const char* valueToSet,int * valueLen)
+int pp_wait_completions(struct kv_handle *handle, int iters,char ** answerBuffer,void* valueToSet,int * valueLen)
 {
     struct pingpong_context* ctx = handle->ctx;
     int rcnt, scnt, num_cq_events, use_event = 0;
@@ -678,7 +678,7 @@ int pp_wait_completions(struct kv_handle *handle, int iters,char ** answerBuffer
                     printf("got rend set response@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n");
                     //printf("will set string: %s\n",valueToSet);
                     //register memory at value in size valueLen, and sendit to packet data
-                    handle->registeredMR[handle->numRegistered] = ibv_reg_mr(ctx->pd,valueToSet,
+                    handle->registeredMR[handle->numRegistered] = ibv_reg_mr(ctx->pd,(void*) valueToSet,
                                                     *valueLen, IBV_ACCESS_LOCAL_WRITE |
                                                     IBV_ACCESS_REMOTE_WRITE | IBV_ACCESS_REMOTE_READ); 
                     if (!handle->registeredMR[handle->numRegistered]) {
@@ -760,7 +760,7 @@ unsigned getServerNumFromIndexer(struct dkv_handle *dkv_h, const char *key)
 }
 
 
-int kv_set(struct kv_handle *kv_handle, const char *key, const char *value, unsigned valueLength)
+int kv_set(struct kv_handle *kv_handle, const char *key, void *value, unsigned valueLength)
 {
     struct pingpong_context *ctx = kv_handle->ctx;
     struct packet *set_packet = (struct packet*)ctx->buf;
@@ -808,7 +808,7 @@ int kv_set(struct kv_handle *kv_handle, const char *key, const char *value, unsi
     pp_post_send(ctx, IBV_WR_RDMA_WRITE, packet_size, value, NULL, 0);// TODO (1LOC): replace with remote info for RDMA_WRITE from packet );
     return pp_wait_completions(kv_handle, 1,NULL);*/ // wait for both to complete 
 }
-int dkv_set(struct dkv_handle *dkv_h, const char *key, const char *value, unsigned length)
+int dkv_set(struct dkv_handle *dkv_h, const char *key, void *value, unsigned length)
  {
     printf("dkv setting\n");
     unsigned serverToContact = getServerNumFromIndexer(dkv_h, key);
