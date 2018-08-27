@@ -789,7 +789,7 @@ int kv_set(struct kv_handle *kv_handle, const char *key, const char *value, unsi
     pp_post_send(ctx, IBV_WR_SEND, packet_size, NULL,0, 0, 0); /* Sends the packet to the server */    
     int * valLen = malloc(sizeof(int));
     *valLen = valueLength;
-    
+    printf("file size is %d\n",*valLen);
     return (pp_wait_completions(kv_handle, 2,NULL,value,valLen));//sent value. wait for RD_SET_RESPONSE and RDMA_WRITE the value
     /*
     pp_post_recv(ctx, 1); // Posts a receive-buffer for RENDEZVOUS_SET_RESPONSE 
