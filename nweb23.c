@@ -678,13 +678,15 @@ int pp_wait_completions(struct kv_handle *handle, int iters,char ** answerBuffer
                     printf("got rend set response@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n");
                     //printf("will set string: %s\n",valueToSet);
                     //register memory at value in size valueLen, and sendit to packet data
-                    handle->registeredMR[handle->numRegistered] = ibv_reg_mr(ctx->pd,(void*) valueToSet,
+                    handle->registeredMR[handle->numRegistered] = ibv_reg_mr(ctx->pd,valueToSet,
                                                     *valueLen, IBV_ACCESS_LOCAL_WRITE |
                                                     IBV_ACCESS_REMOTE_WRITE | IBV_ACCESS_REMOTE_READ); 
                     handle->numRegistered = handle->numRegistered + 1;
                     printf("mem registered, valueLen = %d\n",*valueLen);
                     printf("gotten keys: radd = %d\nrkey = %d\n",gotten_packet->rndv_set_response.remote_address
                             ,gotten_packet->rndv_set_response.rkey);
+                    printf("sending keys: radd = %d\nrkey = %d\n",handle->registeredMR[handle->numRegistered-1]->addr,
+                            handle->registeredMR[handle->numRegistered-1]->lkey);
                     pp_post_send(handle->ctx,IBV_WR_RDMA_WRITE,*valueLen,
                             handle->registeredMR[handle->numRegistered-1]->addr,
                             handle->registeredMR[handle->numRegistered-1]->lkey,
