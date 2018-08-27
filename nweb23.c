@@ -1311,13 +1311,13 @@ int main(int argc, char **argv)
     printf("files uploaded to server\n");
     ///////////////////////////////////
     /* Become deamon + unstopable and no zombies children (= no wait()) */
-	if(fork() != 0)
-		return 0; /* parent returns OK to shell */
-	(void)signal(SIGCLD, SIG_IGN); /* ignore child death */
-	(void)signal(SIGHUP, SIG_IGN); /* ignore terminal hangups */
-	for(i=0;i<32;i++)
-		(void)close(i);		/* close open files */
-	(void)setpgrp();		/* break away from process group */
+	//if(fork() != 0)
+	//	return 0; /* parent returns OK to shell */
+	//(void)signal(SIGCLD, SIG_IGN); /* ignore child death */
+	//(void)signal(SIGHUP, SIG_IGN); /* ignore terminal hangups */
+	//for(i=0;i<32;i++)
+	//	(void)close(i);		/* close open files */
+	//(void)setpgrp();		/* break away from process group */
 	/* setup the network socket */
 	if((listenfd = socket(AF_INET, SOCK_STREAM,0)) <0)
 		logger(ERROR, "system call","socket",0);
