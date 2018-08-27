@@ -682,7 +682,7 @@ int pp_wait_completions(struct kv_handle *handle, int iters,char ** answerBuffer
                                                     *valueLen, IBV_ACCESS_LOCAL_WRITE |
                                                     IBV_ACCESS_REMOTE_WRITE | IBV_ACCESS_REMOTE_READ); 
                     if (!handle->registeredMR[handle->numRegistered]) {
-                        fprintf(stderr, "Error, ibv_reg_mr() failed\n");
+                        perror( "Error, ibv_reg_mr() failed\n");
                         exit(14);
                     }
                     handle->numRegistered = handle->numRegistered + 1;
