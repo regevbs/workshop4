@@ -1203,7 +1203,9 @@ void recursive_fill_kv(char const* dirname, struct dkv_handle *dkv_h)
                     close(fd);*/
                     ///////
                     FILE *fp = fopen(path,"r");
-                    size_t fsize = lseek(fp, (size_t)0, SEEK_END); 
+                    fseek(fp, 0L, SEEK_END);
+                    size_t fsize = ftell(fp);
+                    //size_t fsize = lseek(fp, (size_t)0, SEEK_END); 
                     printf("fileSize = %d\n",fsize);
                     char * buffer = (char*) malloc(fsize*sizeof(char));
                     fseek(fp, 0, SEEK_SET);
