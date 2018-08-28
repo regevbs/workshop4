@@ -631,7 +631,7 @@ int handle_server_packets_only(struct kv_handle *handle, struct packet *packet)
     struct packet *response_packet = (struct packet*)ctx->buf;
 	bool indexFound = false;
     int i=0;
-    printf("indexer got packet\ntype = %d and not %d %d\n",packet->type,FIND,LOCATION);
+    //printf("indexer got packet\ntype = %d and not %d %d\n",packet->type,FIND,LOCATION);
     switch (packet->type) {
 	/* Only handle packets relevant to the server here - client will handle inside get/set() calls */
     case FIND:/* TODO (10LOC): handle a short GET() on the server */
@@ -641,7 +641,7 @@ int handle_server_packets_only(struct kv_handle *handle, struct packet *packet)
         int mod = packet->find.num_of_servers;
         printf("got key %s\nNum servers: %d\n",packet->find.key,packet->find.num_of_servers);
         unsigned char* keyToFind = packet->find.key;
-        printf("finding key %s\n",keyToFind);
+        //printf("finding key %s\n",keyToFind);
         unsigned hashVal =(unsigned)( hash(keyToFind) % mod);
         printf("hashed to server %d\n",hashVal);
         response_packet->type = LOCATION;
@@ -654,20 +654,6 @@ int handle_server_packets_only(struct kv_handle *handle, struct packet *packet)
             //response_size = sizeof(char);
         
         break;
-    //just to try..
-    case LOCATION:
-        ;
-        int mod2 = packet->find.num_of_servers;
-        printf("got key %s\nNum servers: %d\n",packet->find.key,packet->find.num_of_servers);
-        unsigned char* keyToFind2 = packet->find.key;
-        printf("finding key %s\n",keyToFind2);
-        unsigned hashVal2 =(unsigned)( hash(keyToFind2) % mod2);
-        printf("hashed to server %d\n",hashVal2);
-        response_packet->type = LOCATION;
-        response_size = sizeof(struct packet) + sizeof(unsigned);
-        response_packet->location.selected_server = hashVal2;
-        break;
-     ///////////////////////
     case TERMINATE:
         printf("terminating\n");
         return -10;
@@ -707,7 +693,7 @@ int pp_wait_completions(struct kv_handle *handle, int iters)
 		} while (ne < 1);
         //printf("pass 3\n");
 		for (i = 0; i < ne; ++i) {
-            printf("indexer is onto sumthin\n");
+            //printf("indexer is onto sumthin\n");
 			if (wc[i].status != IBV_WC_SUCCESS) {
 				fprintf(stderr, "Failed status %s (%d) for wr_id %d\n",
 					ibv_wc_status_str(wc[i].status),
@@ -717,13 +703,13 @@ int pp_wait_completions(struct kv_handle *handle, int iters)
 
 			switch ((int) wc[i].wr_id) {
 			case PINGPONG_SEND_WRID:
-                printf("indexer got send completion\n");
+                //printf("indexer got send completion\n");
                 scnt = scnt + 1;
 				break;
 
 			case PINGPONG_RECV_WRID:;
                 int retVal;
-                printf("indexer recv msg type = %d\n",((struct packet*)ctx->buf)->type);
+                //printf("indexer recv msg type = %d\n",((struct packet*)ctx->buf)->type);
 				retVal = handle_server_packets_only(handle, (struct packet*)ctx->buf);
                 if(retVal == -10)
                 {

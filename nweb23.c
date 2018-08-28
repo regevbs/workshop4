@@ -577,8 +577,8 @@ static int pp_post_recv(struct pingpong_context *ctx, int n)
 static int pp_post_send(struct pingpong_context *ctx, enum ibv_wr_opcode opcode, unsigned size, const char *local_ptr,uint32_t lkey, uint64_t remote_ptr, uint32_t remote_key)
 {
     //printf("voosh\n");
-    printf("lkey is %d vs %d\nlocal ptr is %d vs %d\n",(lkey ? lkey : ctx->mr->lkey),ctx->mr->lkey,(local_ptr ? local_ptr : ctx->buf),ctx->buf);
-	printf("server data in client: rkey = %d \n remote_addr = %d\n",remote_key,remote_ptr);
+    //printf("lkey is %d vs %d\nlocal ptr is %d vs %d\n",(lkey ? lkey : ctx->mr->lkey),ctx->mr->lkey,(local_ptr ? local_ptr : ctx->buf),ctx->buf);
+	//printf("server data in client: rkey = %d \n remote_addr = %d\n",remote_key,remote_ptr);
     struct ibv_sge list = {
 		.addr	= (uintptr_t) (local_ptr ? local_ptr : ctx->buf),
 		.length = size,
@@ -609,7 +609,7 @@ int pp_wait_completions(struct kv_handle *handle, int iters,char ** answerBuffer
     struct pingpong_context* ctx = handle->ctx;
     int rcnt, scnt, num_cq_events, use_event = 0;
 	rcnt = scnt = 0;
-    printf("waiting completions %d\n",iters);
+    //printf("waiting completions %d\n",iters);
 	while (rcnt + scnt < iters) {
 		struct ibv_wc wc[2];
 		int ne, i;
@@ -631,24 +631,24 @@ int pp_wait_completions(struct kv_handle *handle, int iters,char ** answerBuffer
 					wc[i].status, (int) wc[i].wr_id, wc[i].opcode);
 				return 1;
 			}
-            printf("successful wc\n");
+            //printf("successful wc\n");
             struct packet* gotten_packet;
 			switch ((int) wc[i].wr_id) {
 			case PINGPONG_SEND_WRID:
-                printf("msg sent successful\n");
+                //printf("msg sent successful\n");
                 scnt = scnt + 1;
 				break;
 
 			case PINGPONG_RECV_WRID:
 				//handle_server_packets_only(handle, (struct packet*)&ctx->buf);
 				gotten_packet = (struct packet*)ctx->buf;
-                printf("recv wrid\n");
+                //printf("recv wrid\n");
                 if(gotten_packet->type == EAGER_GET_RESPONSE)
                 {
                     *answerBuffer = malloc(gotten_packet->eager_get_response.valueLen * sizeof(char));
                     memcpy(*answerBuffer,gotten_packet->eager_get_response.value,gotten_packet->eager_get_response.valueLen);
                     *valueLen = gotten_packet->eager_get_response.valueLen;
-                    printf("Value len eager: %d\n",*valueLen);
+                    printf("Value len eager: %d\n",gotten_packet->eager_get_response.valueLen);
                 }
                 else if(gotten_packet->type == EAGER_SET_RESPONSE)
                 {
@@ -659,7 +659,7 @@ int pp_wait_completions(struct kv_handle *handle, int iters,char ** answerBuffer
                     printf("gotten rndv get response\n");
                     *answerBuffer = malloc(gotten_packet->rndv_get_response.valueLen * sizeof(char));
                     *valueLen = gotten_packet->rndv_get_response.valueLen;
-                    printf("Value len rdv: %d\n",*valueLen);
+                    printf("Value len rdv: %d\n",gotten_packet->rndv_get_response.valueLen);
                     //register memory at value in size valueLen, and sendit to packet data
                     handle->registeredMR[handle->numRegistered] = ibv_reg_mr(ctx->pd, *answerBuffer,
                                                     gotten_packet->rndv_get_response.valueLen, IBV_ACCESS_LOCAL_WRITE |
@@ -670,11 +670,11 @@ int pp_wait_completions(struct kv_handle *handle, int iters,char ** answerBuffer
                             gotten_packet->rndv_get_response.remote_address
                             ,gotten_packet->rndv_get_response.rkey);
                     pp_wait_completions(handle, 1,NULL,NULL,NULL);//wait for comp
-                    printf("RDMA recieved\n");
+                    //printf("RDMA recieved\n");
                 }
                 else if(gotten_packet->type == RENDEZVOUS_SET_RESPONSE)
                 {
-                    printf("got rend set response@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n");
+                    //printf("got rend set response@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n");
                     //printf("will set string: %s\n",valueToSet);
                     //register memory at value in size valueLen, and sendit to packet data
                     handle->registeredMR[handle->numRegistered] = ibv_reg_mr(ctx->pd,(void*) valueToSet,
@@ -685,23 +685,23 @@ int pp_wait_completions(struct kv_handle *handle, int iters,char ** answerBuffer
                         exit(14);
                     }
                     handle->numRegistered = handle->numRegistered + 1;
-                    printf("mem registered, valueLen = %d\n",*valueLen);
-                    printf("gotten keys: radd = %d\nrkey = %d\n",gotten_packet->rndv_set_response.remote_address
-                            ,gotten_packet->rndv_set_response.rkey);
-                    printf("sending keys: radd = %d\n",handle->registeredMR[handle->numRegistered-1]->addr);
-                    printf("sending key lkey = %d\n",handle->registeredMR[handle->numRegistered-1]->lkey);
+                    //printf("mem registered, valueLen = %d\n",*valueLen);
+                    //printf("gotten keys: radd = %d\nrkey = %d\n",gotten_packet->rndv_set_response.remote_address
+                     //       ,gotten_packet->rndv_set_response.rkey);
+                    //printf("sending keys: radd = %d\n",handle->registeredMR[handle->numRegistered-1]->addr);
+                    //printf("sending key lkey = %d\n",handle->registeredMR[handle->numRegistered-1]->lkey);
                     pp_post_send(handle->ctx,IBV_WR_RDMA_WRITE,*valueLen,
                             handle->registeredMR[handle->numRegistered-1]->addr,
                             handle->registeredMR[handle->numRegistered-1]->lkey,
                             gotten_packet->rndv_set_response.remote_address
                             ,gotten_packet->rndv_set_response.rkey);
-                    printf("sent, waiting for completion\n");
+                    //printf("sent, waiting for completion\n");
                     pp_wait_completions(handle, 1,NULL,NULL,NULL);//wait for comp
-                    printf("RDMA sent\n");//handle->registeredMR[handle->numRegistered-1]->addr);
+                    //printf("RDMA sent\n");//handle->registeredMR[handle->numRegistered-1]->addr);
                 }
                 else if(gotten_packet->type == LOCATION)
                 {
-                    printf("location packet arrived\n");
+                    //printf("location packet arrived\n");
                     *answerBuffer = malloc(sizeof(char));
                     //memcpy(*answerBuffer,&gotten_packet->location.selected_server,sizeof(unsigned));
                     **answerBuffer = (char)gotten_packet->location.selected_server;
@@ -718,7 +718,7 @@ int pp_wait_completions(struct kv_handle *handle, int iters,char ** answerBuffer
 			}
 		}
 	}
-    printf("done working on packet\n");
+    //printf("done working on packet\n");
 	return 0;
 }
 
@@ -741,13 +741,13 @@ unsigned getServerNumFromIndexer(struct dkv_handle *dkv_h, const char *key)
     
     memcpy(set_packet->find.key,key,strlen(key) + 1);
     set_packet->find.num_of_servers = NUM_SERVERS;
-    printf("finding key: %s\nnum servers: %d\n",set_packet->find.key,set_packet->find.num_of_servers );
+    //printf("finding key: %s\nnum servers: %d\n",set_packet->find.key,set_packet->find.num_of_servers );
     /* TODO (4LOC): fill in the rest of the get_packet */
-    printf("send %s\n",set_packet->eager_get_request.key);
+    //printf("send %s\n",set_packet->eager_get_request.key);
     //printf("packet size is %d.\nchar after packet size = %c\nlast char in msg is = %c\n",packet_size,set_packet->eager_set_request.key_and_value[packet_size-sizeof(struct packet)],set_packet->eager_set_request.key_and_value[packet_size-1-sizeof(struct packet)]);
-    printf("packet type is %d\n",set_packet->type);
+    //printf("packet type is %d\n",set_packet->type);
     pp_post_send(ctx_indexer, IBV_WR_SEND, packet_size, NULL,0, 0, 0); /* Sends the packet to the server */
-    printf("packet sent\n");
+    //printf("packet sent\n");
     char ** value = malloc(sizeof(char*));
     int retVal = pp_wait_completions(dkv_h->indexer, 2,value,NULL,NULL);
     if(retVal != 0)
@@ -1205,7 +1205,7 @@ void recursive_fill_kv(char const* dirname, struct dkv_handle *dkv_h)
 
                     /* Read and display data */
                     fread(buffer, fsize, 1, fp);
-                    printf("%s\n", buffer);
+                    //printf("%s\n", buffer);
                     dkv_set(dkv_h, path, buffer, fsize);
                     free(buffer);
                     fclose(fp); 
@@ -1247,7 +1247,7 @@ int main(int argc, char **argv)
        fprintf(stderr,usageMessage, argv[0]);
        exit(0);
     }
-    printf("done getting input\n");
+    //printf("done getting input\n");
     
     /////////////////////////////
 	/*if( argc < 3  || argc > 3 || !strcmp(argv[1], "-?") ) {
@@ -1277,7 +1277,7 @@ int main(int argc, char **argv)
 		(void)printf("ERROR: Can't Change to directory %s\n",argv[2]);
 		exit(4);
 	}
-    printf("dir ok\n");
+    //printf("dir ok\n");
 	
 	logger(LOG,"nweb starting",argv[1],getpid());
     ///////////////////////////////////
@@ -1285,7 +1285,7 @@ int main(int argc, char **argv)
     indexer->port = (short) atoi(argv[4]);
     indexer->servername = strdupa(argv[3]);
     
-    printf("here\n");
+    //printf("here\n");
     for(int serverNum = 0; serverNum < NUM_SERVERS; serverNum++)
     {
         //printf("in\n");

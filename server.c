@@ -846,17 +846,14 @@ int handle_server_packets_only(struct kv_handle *handle, struct packet *packet)
                 handle->remote_addresses[i] = (uint64_t) handle->registeredMR[i]->addr;
                 handle->rkeyValue[i] = (uint32_t) handle->registeredMR[i]->rkey;
             }
-            else
-            {
-                printf("crap!\n");
-            }
+            
             handle->numRegistered = handle->numRegistered + 1;
             //TODO create the packet to return for the client to write into this MR.
-            printf("server: r_add = %d\nr_key = %d\n",handle->remote_addresses[i],handle->rkeyValue[i]);
+            //printf("server: r_add = %d\nr_key = %d\n",handle->remote_addresses[i],handle->rkeyValue[i]);
 
             response_packet->rndv_get_response.remote_address = handle->remote_addresses[i];
             response_packet->rndv_get_response.rkey = handle->rkeyValue[i];
-            printf("done here\n");
+            //printf("done here\n");
         }
         
         break;
@@ -869,7 +866,7 @@ int handle_server_packets_only(struct kv_handle *handle, struct packet *packet)
     default:
         break;
     }
-	printf("resp size is %d\n",response_size);
+	//printf("resp size is %d\n",response_size);
 	if (response_size) {
         //printf("responding%%%%%%%%%%%%%%%%%%%%%%%%%\nresponse size is %d\npacket is sized %d\n",response_size,sizeof(struct packet));
 		pp_post_send(handle->ctx, IBV_WR_SEND, response_size, NULL, NULL, 0);
