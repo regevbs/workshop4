@@ -643,6 +643,7 @@ int handle_server_packets_only(struct kv_handle *handle, struct packet *packet)
         {
             //printf("index found! sending reply\n");
             response_packet->type = EAGER_GET_RESPONSE;
+            printf("values: %s\nvalue Lenn = %d\n",handle->values[i],handle->valueLen[i]);
             //response_size = sizeof(struct packet) + strlen((handle->values)[i])  + 1;
             response_size = sizeof(struct packet) + handle->valueLen[i] + 1;
             if(response_size <= EAGER_PROTOCOL_LIMIT)
@@ -831,7 +832,7 @@ int handle_server_packets_only(struct kv_handle *handle, struct packet *packet)
             (handle->keyLen)[i] = packet->rndv_set_request.keyLen;
             (handle->keys)[i] = (char*) malloc((handle->keyLen)[i]);
             (handle->valueLen)[i] = packet->rndv_set_request.valueLen;
-            printf("rndv value len setting is %d\n",packet->rndv_set_request.valueLen);
+            printf("irndv value len setting is %d\n",packet->rndv_set_request.valueLen);
             handle->entryLen = handle->entryLen + 1;
             memcpy((handle->keys)[i],packet->rndv_set_request.key,packet->rndv_set_request.keyLen);
             //TODO reg a new MR here.
