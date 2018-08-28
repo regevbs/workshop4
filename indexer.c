@@ -656,15 +656,15 @@ int handle_server_packets_only(struct kv_handle *handle, struct packet *packet)
         break;
     //just to try..
     case LOCATION:
-        int mod = packet->find.num_of_servers;
+        int mod2 = packet->find.num_of_servers;
         printf("got key %s\nNum servers: %d\n",packet->find.key,packet->find.num_of_servers);
-        unsigned char* keyToFind = packet->find.key;
-        printf("finding key %s\n",keyToFind);
-        unsigned hashVal =(unsigned)( hash(keyToFind) % mod);
-        printf("hashed to server %d\n",hashVal);
+        unsigned char* keyToFind2 = packet->find.key;
+        printf("finding key %s\n",keyToFind2);
+        unsigned hashVal2 =(unsigned)( hash(keyToFind2) % mod2);
+        printf("hashed to server %d\n",hashVal2);
         response_packet->type = LOCATION;
         response_size = sizeof(struct packet) + sizeof(unsigned);
-        response_packet->location.selected_server = hashVal;
+        response_packet->location.selected_server = hashVal2;
         break;
      ///////////////////////
     case TERMINATE:
