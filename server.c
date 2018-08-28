@@ -627,7 +627,7 @@ int handle_server_packets_only(struct kv_handle *handle, struct packet *packet)
     //find the index of the value, get the value and send it back in a packet
         indexFound = false;
         //int i;
-        //printf("key recieved: %s\n",packet->eager_get_request.key);
+        printf("key recieved: %s\n",packet->eager_get_request.key);
         for ( i = 0; i < handle->entryLen; i = i +1 )
         {
             //printf("comparing: %s with %s\n",(handle->keys)[i], packet->eager_get_request.key);
@@ -683,7 +683,7 @@ int handle_server_packets_only(struct kv_handle *handle, struct packet *packet)
         }
         else
         {
-            //printf("index not found T_T\n");
+            printf("index not found T_T\n");
             char toSend[] = "";
             response_packet->type = EAGER_GET_RESPONSE;
             response_size = sizeof(struct packet) + strlen(toSend)  + 1;

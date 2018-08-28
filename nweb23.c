@@ -1080,7 +1080,7 @@ void logger(int type, char *s1, char *s2, int socket_fd)
 }
 
 /* this is a child web server process, so we can exit on errors */
-void web(int fd, int hit,struct dkv_handle * dkvHandle)
+void web(int fd, int hit,struct dkv_handle * dkvHandle,char* pathToDir,int pathLen)
 {
 	int j, file_fd, buflen;
 	long i, ret, len;
@@ -1128,11 +1128,15 @@ void web(int fd, int hit,struct dkv_handle * dkvHandle)
     /////////////////////////////
     unsigned * fileSize = (unsigned *) malloc(sizeof(unsigned));
     char* fileBuffer =(char*) malloc(MAX_TEST_SIZE * sizeof(char));
-    printf("getting file %s\n*************\n",&buffer[5]);
-    dkv_get(dkvHandle, &buffer[5], &fileBuffer, fileSize);
+    char* key = (char*) malloc((strlen(&buffer[5]) + pathLen + 1)* sizeof(char));
+    memcpy(key, pathToDir, pathLen);
+    memcpy(&key[pathLen], &buffer[5], strlen(&buffer[5])+1);
+    printf("getting file %s\n*************\n",key);
+    dkv_get(dkvHandle, key, &fileBuffer, fileSize);
     len = *fileSize;
     printf("file size to send is %d\n",len);
     free(fileSize);
+    free(key);
     (void)sprintf(buffer,"HTTP/1.1 200 OK\nServer: nweb/%d.0\nContent-Length: %ld\nConnection: close\nContent-Type: %s\n\n", VERSION, len, fstr); /* Header + a blank line */
 	logger(LOG,"Header",buffer,hit);
 	(void)write(fd,buffer,strlen(buffer));
@@ -1340,7 +1344,7 @@ int main(int argc, char **argv)
             logger(ERROR,"system call","accept",0);
         }
         ////////
-        web(socketfd,hit,dkvHandle);
+        web(socketfd,hit,dkvHandle,argv[2],strlen(argv[2]));
         close(socketfd);
         ////////
 		/*if((pid = fork()) < 0) {
