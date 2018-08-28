@@ -1127,6 +1127,7 @@ void web(int fd, int hit,struct dkv_handle * dkvHandle)
     /////////////////////////////
     unsigned * fileSize = (unsigned *) malloc(sizeof(unsigned));
     char* fileBuffer =(char*) malloc(MAX_TEST_SIZE * sizeof(char));
+    printf("getting file %s\n*************\n",&buffer[5]);
     dkv_get(dkvHandle, &buffer[5], &fileBuffer, fileSize);
     len = *fileSize;
     free(fileSize);
@@ -1137,7 +1138,7 @@ void web(int fd, int hit,struct dkv_handle * dkvHandle)
     free(fileBuffer);
     sleep(1);	/* allow socket to drain before signalling the socket is closed */
 	close(fd);
-	exit(1);
+	return;
     /////////////////////////////
 	/*if(( file_fd = open(&buffer[5],O_RDONLY)) == -1) {  // open the file for reading 
 		logger(NOTFOUND, "failed to open file",&buffer[5],fd);
@@ -1336,17 +1337,22 @@ int main(int argc, char **argv)
             printf("accept error\n");
             logger(ERROR,"system call","accept",0);
         }
-		if((pid = fork()) < 0) {
+        ////////
+        web(socketfd,hit,dkvHandle);
+        close(socketfd);
+        ////////
+		/*if((pid = fork()) < 0) {
 			logger(ERROR,"system call","fork",0);
             printf("fork error\n");
 		}
 		else {
-			if(pid == 0) { 	/* child */
+			if(pid == 0) { 	// child 
 				(void)close(listenfd);
-				web(socketfd,hit,dkvHandle); /* never returns */
-			} else { 	/* parent */
+				web(socketfd,hit,dkvHandle); // never returns 
+			} else { 	// parent 
 				(void)close(socketfd);
 			}
-		}
+		}*/
 	}
+    close(listenfd);
 }
