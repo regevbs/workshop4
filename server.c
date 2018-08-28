@@ -647,9 +647,10 @@ int handle_server_packets_only(struct kv_handle *handle, struct packet *packet)
             response_size = sizeof(struct packet) + handle->valueLen[i] + 1;
             if(response_size <= EAGER_PROTOCOL_LIMIT)
             {
-                response_packet->eager_get_response.valueLen = strlen((handle->values)[i])  + 1;
+                //fixing here @@@@
+                response_packet->eager_get_response.valueLen = handle->valueLen[i] + 1;//strlen((handle->values)[i])  + 1;
                 //memcpy the found data into the buffer
-                memcpy(response_packet->eager_get_response.value,(handle->values)[i],strlen((handle->values)[i])  + 1);
+                memcpy(response_packet->eager_get_response.value,(handle->values)[i],handle->valueLen[i] + 1);//strlen((handle->values)[i])  + 1);
             }
             else //need to respond with a rndv_get_response
             {
@@ -670,7 +671,8 @@ int handle_server_packets_only(struct kv_handle *handle, struct packet *packet)
                 }
                 response_packet->rndv_get_response.remote_address = handle->remote_addresses[i];
                 response_packet->rndv_get_response.rkey = handle->rkeyValue[i];
-                response_packet->rndv_get_response.valueLen = strlen(handle->values[i]) + 1;
+                //fixing here @@@@
+                response_packet->rndv_get_response.valueLen = handle->valueLen[i] + 1;//strlen(handle->values[i]) + 1;
             }
             //memcpy((handle->ctx)->buf,(handle->values)[i],(handle->valueLen)[i]);
             
