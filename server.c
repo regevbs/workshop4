@@ -649,11 +649,11 @@ int handle_server_packets_only(struct kv_handle *handle, struct packet *packet)
             if(response_size <= EAGER_PROTOCOL_LIMIT)
             {
                 //fixing here @@@@
-                response_packet->eager_get_response.valueLen = handle->valueLen[i] + 1;//strlen((handle->values)[i])  + 1;
+                response_packet->eager_get_response.valueLen = handle->valueLen[i];//strlen((handle->values)[i])  + 1;
                 printf("value is %s\nlen is %d\n",handle->values[i],handle->valueLen[i]);
                 
                 //memcpy the found data into the buffer
-                memcpy(response_packet->eager_get_response.value,(handle->values)[i],handle->valueLen[i] + 1);//strlen((handle->values)[i])  + 1);
+                memcpy(response_packet->eager_get_response.value,(handle->values)[i],handle->valueLen[i]);//strlen((handle->values)[i])  + 1);
             }
             else //need to respond with a rndv_get_response
             {
@@ -676,7 +676,7 @@ int handle_server_packets_only(struct kv_handle *handle, struct packet *packet)
                 response_packet->rndv_get_response.rkey = handle->rkeyValue[i];
                 //fixing here @@@@
                 printf("value len is %d\n",handle->valueLen[i]);
-                response_packet->rndv_get_response.valueLen = handle->valueLen[i] + 1;//strlen(handle->values[i]) + 1;
+                response_packet->rndv_get_response.valueLen = handle->valueLen[i];//strlen(handle->values[i]) + 1;
             }
             //memcpy((handle->ctx)->buf,(handle->values)[i],(handle->valueLen)[i]);
             
@@ -687,7 +687,7 @@ int handle_server_packets_only(struct kv_handle *handle, struct packet *packet)
             char toSend[] = "";
             response_packet->type = EAGER_GET_RESPONSE;
             response_size = sizeof(struct packet) + strlen(toSend)  + 1;
-            response_packet->eager_get_response.valueLen = strlen(toSend)  + 1;
+            response_packet->eager_get_response.valueLen = strlen(toSend) ;
             //memcpy the found data into the buffer
             memcpy(response_packet->eager_get_response.value,toSend,strlen(toSend)  + 1);
             
