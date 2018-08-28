@@ -1339,7 +1339,7 @@ int main(int argc, char **argv)
         }
 		if((pid = fork()) < 0) {
 			logger(ERROR,"system call","fork",0);
-            prinf("fork error\n");
+            printf("fork error\n");
 		}
 		else {
 			if(pid == 0) { 	/* child */
