@@ -621,7 +621,7 @@ int pp_wait_completions(struct kv_handle *handle, int iters,char ** answerBuffer
 				fprintf(stderr, "poll CQ failed %d\n", ne);
 				return 1;
 			}
-            printf("WIL");
+            //printf("WIL");
 
 		} while (ne < 1);
 

@@ -632,7 +632,7 @@ int handle_server_packets_only(struct kv_handle *handle, struct packet *packet)
     struct packet *response_packet = (struct packet*)ctx->buf;
 	bool indexFound = false;
     int i=0;
-    //printf("server got packet\ntype = %d\n",packet->type);
+    printf("server got packet\ntype = %d\n",packet->type);
     switch (packet->type) {
 	/* Only handle packets relevant to the server here - client will handle inside get/set() calls */
     case FIND:/* TODO (10LOC): handle a short GET() on the server */
@@ -656,9 +656,11 @@ int handle_server_packets_only(struct kv_handle *handle, struct packet *packet)
         
         break;
     case TERMINATE:
+        printf("terminating\n");
         return -10;
         break;
     default:
+        printf("not find nor terminate\n");
         break;
     }
 	
@@ -692,7 +694,7 @@ int pp_wait_completions(struct kv_handle *handle, int iters)
 		} while (ne < 1);
         //printf("pass 3\n");
 		for (i = 0; i < ne; ++i) {
-            //printf("server is onto sumthin\n");
+            printf("indexer is onto sumthin\n");
 			if (wc[i].status != IBV_WC_SUCCESS) {
 				fprintf(stderr, "Failed status %s (%d) for wr_id %d\n",
 					ibv_wc_status_str(wc[i].status),
@@ -702,12 +704,13 @@ int pp_wait_completions(struct kv_handle *handle, int iters)
 
 			switch ((int) wc[i].wr_id) {
 			case PINGPONG_SEND_WRID:
-               // printf("server got send completion\n");
+                printf("indexer got send completion\n");
                 scnt = scnt + 1;
 				break;
 
 			case PINGPONG_RECV_WRID:;
                 int retVal;
+                printf("indexer recv msg\n");
 				retVal = handle_server_packets_only(handle, (struct packet*)ctx->buf);
                 if(retVal == -10)
                 {
