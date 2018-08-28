@@ -632,7 +632,7 @@ int handle_server_packets_only(struct kv_handle *handle, struct packet *packet)
     struct packet *response_packet = (struct packet*)ctx->buf;
 	bool indexFound = false;
     int i=0;
-    printf("indexer got packet\ntype = %d\n",packet->type);
+    printf("indexer got packet\ntype = %d and not %d %d\n",packet->type,FIND,LOCATION);
     switch (packet->type) {
 	/* Only handle packets relevant to the server here - client will handle inside get/set() calls */
     case FIND:/* TODO (10LOC): handle a short GET() on the server */
