@@ -649,6 +649,8 @@ int handle_server_packets_only(struct kv_handle *handle, struct packet *packet)
             {
                 //fixing here @@@@
                 response_packet->eager_get_response.valueLen = handle->valueLen[i] + 1;//strlen((handle->values)[i])  + 1;
+                printf("value is %s\nlen is %d\n",handle->values[i],handle->valueLen[i]);
+                
                 //memcpy the found data into the buffer
                 memcpy(response_packet->eager_get_response.value,(handle->values)[i],handle->valueLen[i] + 1);//strlen((handle->values)[i])  + 1);
             }
@@ -672,6 +674,7 @@ int handle_server_packets_only(struct kv_handle *handle, struct packet *packet)
                 response_packet->rndv_get_response.remote_address = handle->remote_addresses[i];
                 response_packet->rndv_get_response.rkey = handle->rkeyValue[i];
                 //fixing here @@@@
+                printf("value len is %d\n",handle->valueLen[i]);
                 response_packet->rndv_get_response.valueLen = handle->valueLen[i] + 1;//strlen(handle->values[i]) + 1;
             }
             //memcpy((handle->ctx)->buf,(handle->values)[i],(handle->valueLen)[i]);
@@ -708,6 +711,7 @@ int handle_server_packets_only(struct kv_handle *handle, struct packet *packet)
         {
             kv_release((handle->values)[i]);//TODO check if release is the func we want
             (handle->valueLen)[i] = packet->eager_set_request.valueLen;
+            printf("value len setting is %d\n",packet->eager_set_request.valueLen);
             (handle->values)[i] = (char*) malloc((handle->valueLen)[i]);
             //memcpy the found data into the buffer
             memcpy((handle->values)[i],&(packet->eager_set_request.key_and_value[packet->eager_set_request.keyLen]),packet->eager_set_request.valueLen);
@@ -718,6 +722,7 @@ int handle_server_packets_only(struct kv_handle *handle, struct packet *packet)
             (handle->keyLen)[i] = packet->eager_set_request.keyLen;
             (handle->keys)[i] = (char*) malloc((handle->keyLen)[i]);
             (handle->valueLen)[i] = packet->eager_set_request.valueLen;
+            printf("value len setting is %d\n",packet->eager_set_request.valueLen);
             (handle->values)[i] = (char*) malloc((handle->valueLen)[i]);
             handle->entryLen = handle->entryLen + 1;
             memcpy((handle->values)[i],&(packet->eager_set_request.key_and_value[packet->eager_set_request.keyLen]),packet->eager_set_request.valueLen);
@@ -792,6 +797,7 @@ int handle_server_packets_only(struct kv_handle *handle, struct packet *packet)
             printf("index found at rdv\n");
             kv_release((handle->values)[i]);//TODO check if release is the func we want
             (handle->valueLen)[i] = packet->rndv_set_request.valueLen;
+            printf("rdv value len setting is %d\n",packet->rndv_set_request.valueLen);
             //TODO dereg the older MR that was here and zero all its attributes
             if(handle->remote_addresses[i] != 0 && handle->rkeyValue[i] != 0)
             {
@@ -825,6 +831,7 @@ int handle_server_packets_only(struct kv_handle *handle, struct packet *packet)
             (handle->keyLen)[i] = packet->rndv_set_request.keyLen;
             (handle->keys)[i] = (char*) malloc((handle->keyLen)[i]);
             (handle->valueLen)[i] = packet->rndv_set_request.valueLen;
+            printf("rndv value len setting is %d\n",packet->rndv_set_request.valueLen);
             handle->entryLen = handle->entryLen + 1;
             memcpy((handle->keys)[i],packet->rndv_set_request.key,packet->rndv_set_request.keyLen);
             //TODO reg a new MR here.
