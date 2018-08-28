@@ -648,7 +648,7 @@ int pp_wait_completions(struct kv_handle *handle, int iters,char ** answerBuffer
                     *answerBuffer = malloc(gotten_packet->eager_get_response.valueLen * sizeof(char));
                     memcpy(*answerBuffer,gotten_packet->eager_get_response.value,gotten_packet->eager_get_response.valueLen);
                     *valueLen = gotten_packet->eager_get_response.valueLen;
-                    //printf("Answer buffer:\n %s\n",*answerBuffer);
+                    printf("Value len eager: %d\n",*valueLen);
                 }
                 else if(gotten_packet->type == EAGER_SET_RESPONSE)
                 {
@@ -659,6 +659,7 @@ int pp_wait_completions(struct kv_handle *handle, int iters,char ** answerBuffer
                     printf("gotten rndv get response\n");
                     *answerBuffer = malloc(gotten_packet->rndv_get_response.valueLen * sizeof(char));
                     *valueLen = gotten_packet->rndv_get_response.valueLen;
+                    printf("Value len rdv: %d\n",*valueLen);
                     //register memory at value in size valueLen, and sendit to packet data
                     handle->registeredMR[handle->numRegistered] = ibv_reg_mr(ctx->pd, *answerBuffer,
                                                     gotten_packet->rndv_get_response.valueLen, IBV_ACCESS_LOCAL_WRITE |
