@@ -656,6 +656,7 @@ int handle_server_packets_only(struct kv_handle *handle, struct packet *packet)
         break;
     //just to try..
     case LOCATION:
+        ;
         int mod2 = packet->find.num_of_servers;
         printf("got key %s\nNum servers: %d\n",packet->find.key,packet->find.num_of_servers);
         unsigned char* keyToFind2 = packet->find.key;
