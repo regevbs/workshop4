@@ -51,7 +51,6 @@ enum packet_type {
     EAGER_GET_RESPONSE,
     EAGER_SET_REQUEST,
     EAGER_SET_RESPONSE,
-
     RENDEZVOUS_GET_REQUEST,
     RENDEZVOUS_GET_RESPONSE,
     RENDEZVOUS_SET_REQUEST,
@@ -577,7 +576,7 @@ static int pp_post_recv(struct pingpong_context *ctx, int n)
 
 static int pp_post_send(struct pingpong_context *ctx, enum ibv_wr_opcode opcode, unsigned size, const char *local_ptr,uint32_t lkey, uint64_t remote_ptr, uint32_t remote_key)
 {
-    printf("voosh\n");
+    //printf("voosh\n");
     printf("lkey is %d vs %d\nlocal ptr is %d vs %d\n",(lkey ? lkey : ctx->mr->lkey),ctx->mr->lkey,(local_ptr ? local_ptr : ctx->buf),ctx->buf);
 	printf("server data in client: rkey = %d \n remote_addr = %d\n",remote_key,remote_ptr);
     struct ibv_sge list = {

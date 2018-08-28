@@ -632,7 +632,7 @@ int handle_server_packets_only(struct kv_handle *handle, struct packet *packet)
     struct packet *response_packet = (struct packet*)ctx->buf;
 	bool indexFound = false;
     int i=0;
-    printf("server got packet\ntype = %d\n",packet->type);
+    printf("indexer got packet\ntype = %d\n",packet->type);
     switch (packet->type) {
 	/* Only handle packets relevant to the server here - client will handle inside get/set() calls */
     case FIND:/* TODO (10LOC): handle a short GET() on the server */
@@ -710,7 +710,7 @@ int pp_wait_completions(struct kv_handle *handle, int iters)
 
 			case PINGPONG_RECV_WRID:;
                 int retVal;
-                printf("indexer recv msg\n");
+                printf("indexer recv msg type = %d\n",((struct packet*)ctx->buf)->type);
 				retVal = handle_server_packets_only(handle, (struct packet*)ctx->buf);
                 if(retVal == -10)
                 {
