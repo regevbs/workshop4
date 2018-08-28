@@ -47,10 +47,8 @@ enum packet_type {
     RENDEZVOUS_SET_REQUEST,
     RENDEZVOUS_SET_RESPONSE,
     TERMINATE,
-#ifdef EX4
     FIND,
     LOCATION,
-#endif
 };
 
 struct packet {
