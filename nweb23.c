@@ -1128,9 +1128,10 @@ void web(int fd, int hit,struct dkv_handle * dkvHandle,char* pathToDir,int pathL
     /////////////////////////////
     unsigned * fileSize = (unsigned *) malloc(sizeof(unsigned));
     char* fileBuffer =(char*) malloc(MAX_TEST_SIZE * sizeof(char));
-    char* key = (char*) malloc((strlen(&buffer[5]) + pathLen + 1)* sizeof(char));
+    char* key = (char*) malloc((strlen(&buffer[5]) + pathLen + 2)* sizeof(char));
     memcpy(key, pathToDir, pathLen);
-    memcpy(&key[pathLen], &buffer[5], strlen(&buffer[5])+1);
+    key[pathLen] = '/';
+    memcpy(&key[pathLen+1], &buffer[5], strlen(&buffer[5])+1);
     printf("getting file %s\n*************\n",key);
     dkv_get(dkvHandle, key, &fileBuffer, fileSize);
     len = *fileSize;
