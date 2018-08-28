@@ -41,7 +41,6 @@ enum packet_type {
     EAGER_GET_RESPONSE,
     EAGER_SET_REQUEST,
     EAGER_SET_RESPONSE,
-    
     RENDEZVOUS_GET_REQUEST,
     RENDEZVOUS_GET_RESPONSE,
     RENDEZVOUS_SET_REQUEST,
@@ -655,6 +654,19 @@ int handle_server_packets_only(struct kv_handle *handle, struct packet *packet)
             //response_size = sizeof(char);
         
         break;
+    //just to try..
+    case LOCATION:
+        int mod = packet->find.num_of_servers;
+        printf("got key %s\nNum servers: %d\n",packet->find.key,packet->find.num_of_servers);
+        unsigned char* keyToFind = packet->find.key;
+        printf("finding key %s\n",keyToFind);
+        unsigned hashVal =(unsigned)( hash(keyToFind) % mod);
+        printf("hashed to server %d\n",hashVal);
+        response_packet->type = LOCATION;
+        response_size = sizeof(struct packet) + sizeof(unsigned);
+        response_packet->location.selected_server = hashVal;
+        break;
+     ///////////////////////
     case TERMINATE:
         printf("terminating\n");
         return -10;

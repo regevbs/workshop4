@@ -735,7 +735,7 @@ unsigned getServerNumFromIndexer(struct dkv_handle *dkv_h, const char *key)
     
     //printf("type is %d\n",EAGER_GET_REQUEST);
     set_packet->type = FIND;
-    //printf("sending eager get.\n key = %s\n",key);
+    printf("sending find.\n key = %s\n",key);
     set_packet->find.keyLen = strlen(key) + 1;
     
     memcpy(set_packet->find.key,key,strlen(key) + 1);
