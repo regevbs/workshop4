@@ -1130,6 +1130,7 @@ void web(int fd, int hit,struct dkv_handle * dkvHandle)
     printf("getting file %s\n*************\n",&buffer[5]);
     dkv_get(dkvHandle, &buffer[5], &fileBuffer, fileSize);
     len = *fileSize;
+    printf("file size to send is %d\n",len);
     free(fileSize);
     (void)sprintf(buffer,"HTTP/1.1 200 OK\nServer: nweb/%d.0\nContent-Length: %ld\nConnection: close\nContent-Type: %s\n\n", VERSION, len, fstr); /* Header + a blank line */
 	logger(LOG,"Header",buffer,hit);
