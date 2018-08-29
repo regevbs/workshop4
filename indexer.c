@@ -1,8 +1,6 @@
 #define _GNU_SOURCE
 #include <infiniband/verbs.h>
 #include <linux/types.h>
-//#include "config.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -56,7 +54,6 @@ struct packet {
         /* The actual packet type will determine which struct will be used: */
 
         struct {
-            /* TODO */
             unsigned keyLen;
             char key[0]; //key will be an array of size len
             
@@ -78,10 +75,6 @@ struct packet {
         } eager_set_request;
 
         struct {
-            /* TODO check what server responds to eager set req*/
-            //unsigned keyLen;
-            //unsigned valueLen;
-            //char key_and_value[0];
         } eager_set_response;
 
         /* RENDEZVOUS PROTOCOL PACKETS */
@@ -605,12 +598,10 @@ static int pp_post_send(struct pingpong_context *ctx, enum ibv_wr_opcode opcode,
 		wr.wr.rdma.rkey = remote_key;
 	}
     return ibv_post_send((*ctx).qp, &wr, &bad_wr);
-	//return ibv_post_send(ctx->qp, &wr, &bad_wr);
 }
 ////////////////
 void kv_release(char *value)
 {
-    /* TODO (2LOC): free value */
 }
 
 unsigned long hash(unsigned char *str)
@@ -619,7 +610,7 @@ unsigned long hash(unsigned char *str)
     int c;
 
     while (c = *str++)
-        hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
+        hash = ((hash << 5) + hash) + c; 
 
     return hash;
 }
@@ -631,42 +622,29 @@ int handle_server_packets_only(struct kv_handle *handle, struct packet *packet)
     struct packet *response_packet = (struct packet*)ctx->buf;
 	bool indexFound = false;
     int i=0;
-    //printf("indexer got packet\ntype = %d and not %d %d\n",packet->type,FIND,LOCATION);
+    
     switch (packet->type) {
 	/* Only handle packets relevant to the server here - client will handle inside get/set() calls */
     case FIND:/* TODO (10LOC): handle a short GET() on the server */
     //find the index of the server that has the value, get the value and send it back in a packet
         ;
-        //printf("index not found T_T\n");
         int mod = packet->find.num_of_servers;
-        printf("got key %s\nNum servers: %d\n",packet->find.key,packet->find.num_of_servers);
         unsigned char* keyToFind = packet->find.key;
-        //printf("finding key %s\n",keyToFind);
         unsigned hashVal =(unsigned)( hash(keyToFind) % mod);
-        printf("hashed to server %d\n",hashVal);
         response_packet->type = LOCATION;
         response_size = sizeof(struct packet) + sizeof(unsigned);
         response_packet->location.selected_server = hashVal;
-            //memcpy the found data into the buffer
-            //memcpy(response_packet->eager_get_response.value,toSend,strlen(toSend)  + 1);
-            
-            //memcpy((handle->ctx)->buf,toSend,sizeof(char));// TODO make sure this is what we send
-            //response_size = sizeof(char);
         
         break;
     case TERMINATE:
-        printf("indexer terminating\n");
         return -10;
         break;
     default:
-        printf("not find nor terminate\n");
         break;
     }
 	
 	if (response_size) {
 		pp_post_send(handle->ctx, IBV_WR_SEND, response_size, NULL, NULL, 0);
-        //sleep(3);
-        //printf("server: buffer has value: %s\n",handle->values[i]);
     }
     
 }
@@ -677,23 +655,18 @@ int pp_wait_completions(struct kv_handle *handle, int iters)
     struct pingpong_context* ctx = handle->ctx;
     int rcnt, scnt, num_cq_events, use_event = 0;
 	rcnt = scnt = 0;
-    //printf("pass 1\n");
 	while (rcnt + scnt < iters) {
 		struct ibv_wc wc[2];
 		int ne, i;
-        //printf("pass 2\n");
 		do {
 			ne = ibv_poll_cq(pp_cq(ctx), 2, wc);
-            //printf("server:%d\n",ne);
 			if (ne < 0) {
 				fprintf(stderr, "poll CQ failed %d\n", ne);
 				return 1;
 			}
 
 		} while (ne < 1);
-        //printf("pass 3\n");
 		for (i = 0; i < ne; ++i) {
-            //printf("indexer is onto sumthin\n");
 			if (wc[i].status != IBV_WC_SUCCESS) {
 				fprintf(stderr, "Failed status %s (%d) for wr_id %d\n",
 					ibv_wc_status_str(wc[i].status),
@@ -703,13 +676,11 @@ int pp_wait_completions(struct kv_handle *handle, int iters)
 
 			switch ((int) wc[i].wr_id) {
 			case PINGPONG_SEND_WRID:
-                //printf("indexer got send completion\n");
                 scnt = scnt + 1;
 				break;
 
 			case PINGPONG_RECV_WRID:;
                 int retVal;
-                //printf("indexer recv msg type = %d\n",((struct packet*)ctx->buf)->type);
 				retVal = handle_server_packets_only(handle, (struct packet*)ctx->buf);
                 if(retVal == -10)
                 {
@@ -739,7 +710,7 @@ int main(int argc, char *argv[])
     
     struct ibv_device      **dev_list;
 	struct ibv_device	*ib_dev;
-	struct pingpong_context *context; //= (struct pingpong_context*) malloc(sizeof(struct pingpong_context));
+	struct pingpong_context *context;
 	struct pingpong_dest    my_dest;
 	struct pingpong_dest    *rem_dest;
 	struct timeval           timer;
@@ -761,7 +732,6 @@ int main(int argc, char *argv[])
     
     
     //get input for the server ip and port
-    //int portNum;
     int numArgs = 2;
     char* usageMessage = "usage %s port\n";
 	if (argc < numArgs) {
@@ -812,9 +782,6 @@ int main(int argc, char *argv[])
     my_dest.qpn = ((*context).qp)->qp_num; //gets the qp number
     my_dest.psn = lrand48() & 0xffffff; //randomizes the packet serial number
     inet_ntop(AF_INET6, &my_dest.gid, gid, sizeof gid); //changes gid to text form
-    //printf("  local address:  LID 0x%04x, QPN 0x%06x, PSN 0x%06x, GID %s\n",
-     //      my_dest[k].lid, my_dest[k].qpn, my_dest[k].psn, gid);
-
     //Get the remote dest for my QPs
     
     rem_dest = pp_server_exch_dest(context, ib_port, mtu, port, sl, //if youre a server - exchange data with client
@@ -822,13 +789,7 @@ int main(int argc, char *argv[])
     
     if (!rem_dest)
             return 1; 
-    
-
-    
     inet_ntop(AF_INET6, &rem_dest->gid, gid, sizeof gid);
-      //printf("  remote address: LID 0x%04x, QPN 0x%06x, PSN 0x%06x, GID %s\n",
-            // rem_dest[k].lid, rem_dest[k].qpn, rem_dest[k].psn, gid);
-         
     //now connect all the QPs to the client
     
     if (pp_connect_ctx(context, ib_port, my_dest.psn, mtu, sl, rem_dest,
@@ -840,21 +801,16 @@ int main(int argc, char *argv[])
     //do server work
     /////////////////////
     struct kv_handle * server_handle = malloc(sizeof(struct kv_handle));
-   
-    //struct pingpong_context *ctx = malloc(sizeof(struct pingpong_context));
     server_handle->ctx = context;
     server_handle->entryLen = 0;
     
     
     /////////////////////
-    //printf("server waiting for completions to respond\n");
     while (0 <= pp_wait_completions(server_handle, 1));//TODO will this ever exit?
     //clean after us
     for(int i = 0; i < server_handle->numRegistered; i = i + 1)
     {
-        //void * memory = server_handle->registeredMR[i]->addr;
         ibv_dereg_mr(server_handle->registeredMR[i]);
-        //free(memory);
     }
     for(int i = 0; i< server_handle->entryLen; i = i + 1)
     {
