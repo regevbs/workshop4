@@ -177,6 +177,7 @@ struct kv_handle
     int keyLen[MAX_SERVER_ENTRIES];
     int valueLen[MAX_SERVER_ENTRIES];
     struct ibv_mr * registeredMR[MAX_SERVER_ENTRIES];
+    int regMRtoIndex[MAX_SERVER_ENTRIES];
     int numRegistered;
     uint32_t rkeyValue[MAX_SERVER_ENTRIES];
     uint64_t remote_addresses[MAX_SERVER_ENTRIES];
@@ -668,6 +669,7 @@ int handle_server_packets_only(struct kv_handle *handle, struct packet *packet)
                     handle->registeredMR[i] = ibv_reg_mr(ctx->pd, handle->values[i],
                                                         handle->valueLen[i], IBV_ACCESS_LOCAL_WRITE |
                                                         IBV_ACCESS_REMOTE_WRITE | IBV_ACCESS_REMOTE_READ); 
+                    handle->regMRtoIndex[handle->numRegistered] = i;
                     handle->numRegistered = handle->numRegistered + 1;
                     handle->remote_addresses[i] = (uint64_t) handle->registeredMR[i]->addr;
                     handle->rkeyValue[i] = (uint32_t) handle->registeredMR[i]->rkey;
@@ -760,6 +762,7 @@ int handle_server_packets_only(struct kv_handle *handle, struct packet *packet)
                                                     IBV_ACCESS_REMOTE_WRITE | IBV_ACCESS_REMOTE_READ); 
                 handle->remote_addresses[i] = (uint64_t) handle->registeredMR[i]->addr;
                 handle->rkeyValue[i] = (uint32_t) handle->registeredMR[i]->rkey;
+                handle->regMRtoIndex[handle->numRegistered] = i;
                 handle->numRegistered = handle->numRegistered + 1;
             }
             response_packet->rndv_get_response.remote_address = handle->remote_addresses[i];
@@ -819,6 +822,7 @@ int handle_server_packets_only(struct kv_handle *handle, struct packet *packet)
                                                     IBV_ACCESS_REMOTE_WRITE | IBV_ACCESS_REMOTE_READ); 
             handle->remote_addresses[i] = (uint64_t) handle->registeredMR[i]->addr;
             handle->rkeyValue[i] = (uint32_t) handle->registeredMR[i]->rkey;
+            
            // printf("server: r_add = %d\nr_key = %d\n",handle->remote_addresses[i],handle->rkeyValue[i]);
             //TODO create the packet to return for the client to write into this MR.
             //printf("mem re - registered\n");
@@ -846,7 +850,7 @@ int handle_server_packets_only(struct kv_handle *handle, struct packet *packet)
                 handle->remote_addresses[i] = (uint64_t) handle->registeredMR[i]->addr;
                 handle->rkeyValue[i] = (uint32_t) handle->registeredMR[i]->rkey;
             }
-            
+            handle->regMRtoIndex[handle->numRegistered] = i;
             handle->numRegistered = handle->numRegistered + 1;
             //TODO create the packet to return for the client to write into this MR.
             //printf("server: r_add = %d\nr_key = %d\n",handle->remote_addresses[i],handle->rkeyValue[i]);
@@ -1061,8 +1065,8 @@ int main(int argc, char *argv[])
     {
         //void * memory = server_handle->registeredMR[i]->addr;
         printf("mr %d\n",i);
-        printf("key: %s\nvalue: %s\n", server_handle->keys[i+1],server_handle->values[i+1]);
-        ibv_dereg_mr(server_handle->registeredMR[i+1]);
+        printf("key: %s\nvalue: %s\n", server_handle->keys[handle->regMRtoIndex[i]],server_handle->values[handle->regMRtoIndex[i]]);
+        ibv_dereg_mr(server_handle->registeredMR[handle->regMRtoIndex[i]]);
         //free(memory);
     }
     printf("deregging MR's done\nStarting free k&v\n");
