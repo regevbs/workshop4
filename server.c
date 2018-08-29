@@ -1056,11 +1056,11 @@ int main(int argc, char *argv[])
     //printf("server waiting for completions to respond\n");
     while (0 <= pp_wait_completions(server_handle, 1));//TODO will this ever exit?
     //clean after us
-    printf("deregging MR's\n");
+    printf("deregging MR's %d\n",server_handle->numRegistered);
     for(int i = 0; i < server_handle->numRegistered; i = i + 1)
     {
         //void * memory = server_handle->registeredMR[i]->addr;
-        
+        printf("mr %d\n",i);
         ibv_dereg_mr(server_handle->registeredMR[i]);
         //free(memory);
     }
