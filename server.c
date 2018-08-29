@@ -833,7 +833,6 @@ int handle_server_packets_only(struct kv_handle *handle, struct packet *packet)
     case FIND: /* TODO (2LOC): use some hash function */
 
     case TERMINATE:
-        printf("server terminating\n");
         return -10;
         break;
     default:
