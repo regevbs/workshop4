@@ -620,14 +620,14 @@ int handle_server_packets_only(struct kv_handle *handle, struct packet *packet)
     struct packet *response_packet = (struct packet*)ctx->buf;
 	bool indexFound = false;
     int i=0;
-    printf("server got packet\ntype = %d\n",packet->type);
+    //printf("server got packet\ntype = %d\n",packet->type);
     switch (packet->type) {
 	/* Only handle packets relevant to the server here - client will handle inside get/set() calls */
     case EAGER_GET_REQUEST:/* TODO (10LOC): handle a short GET() on the server */
     //find the index of the value, get the value and send it back in a packet
         indexFound = false;
         //int i;
-        printf("key recieved: %s\n",packet->eager_get_request.key);
+        //printf("key recieved: %s\n",packet->eager_get_request.key);
         for ( i = 0; i < handle->entryLen; i = i +1 )
         {
             //printf("comparing: %s with %s\n",(handle->keys)[i], packet->eager_get_request.key);
@@ -643,14 +643,14 @@ int handle_server_packets_only(struct kv_handle *handle, struct packet *packet)
         {
             //printf("index found! sending reply\n");
             response_packet->type = EAGER_GET_RESPONSE;
-            printf("values: %s\nvalue Lenn = %d\n",handle->values[i],handle->valueLen[i]);
+            //printf("values: %s\nvalue Lenn = %d\n",handle->values[i],handle->valueLen[i]);
             //response_size = sizeof(struct packet) + strlen((handle->values)[i])  + 1;
             response_size = sizeof(struct packet) + handle->valueLen[i] + 1;
             if(response_size <= EAGER_PROTOCOL_LIMIT)
             {
                 //fixing here @@@@
                 response_packet->eager_get_response.valueLen = handle->valueLen[i];//strlen((handle->values)[i])  + 1;
-                printf("value is %s\nlen is %d\n",handle->values[i],handle->valueLen[i]);
+                //printf("value is %s\nlen is %d\n",handle->values[i],handle->valueLen[i]);
                 
                 //memcpy the found data into the buffer
                 memcpy(response_packet->eager_get_response.value,(handle->values)[i],handle->valueLen[i]);//strlen((handle->values)[i])  + 1);
@@ -675,7 +675,7 @@ int handle_server_packets_only(struct kv_handle *handle, struct packet *packet)
                 response_packet->rndv_get_response.remote_address = handle->remote_addresses[i];
                 response_packet->rndv_get_response.rkey = handle->rkeyValue[i];
                 //fixing here @@@@
-                printf("value len is %d\n",handle->valueLen[i]);
+                //printf("value len is %d\n",handle->valueLen[i]);
                 response_packet->rndv_get_response.valueLen = handle->valueLen[i];//strlen(handle->values[i]) + 1;
             }
             //memcpy((handle->ctx)->buf,(handle->values)[i],(handle->valueLen)[i]);
@@ -683,7 +683,7 @@ int handle_server_packets_only(struct kv_handle *handle, struct packet *packet)
         }
         else
         {
-            printf("index not found T_T\n");
+            //printf("index not found T_T\n");
             char toSend[] = "";
             response_packet->type = EAGER_GET_RESPONSE;
             response_size = sizeof(struct packet) + strlen(toSend)  + 1;
@@ -712,7 +712,7 @@ int handle_server_packets_only(struct kv_handle *handle, struct packet *packet)
         {
             kv_release((handle->values)[i]);//TODO check if release is the func we want
             (handle->valueLen)[i] = packet->eager_set_request.valueLen;
-            printf("value len setting is %d\n",packet->eager_set_request.valueLen);
+           // printf("value len setting is %d\n",packet->eager_set_request.valueLen);
             (handle->values)[i] = (char*) malloc((handle->valueLen)[i]);
             //memcpy the found data into the buffer
             memcpy((handle->values)[i],&(packet->eager_set_request.key_and_value[packet->eager_set_request.keyLen]),packet->eager_set_request.valueLen);
@@ -723,7 +723,7 @@ int handle_server_packets_only(struct kv_handle *handle, struct packet *packet)
             (handle->keyLen)[i] = packet->eager_set_request.keyLen;
             (handle->keys)[i] = (char*) malloc((handle->keyLen)[i]);
             (handle->valueLen)[i] = packet->eager_set_request.valueLen;
-            printf("value len setting is %d\n",packet->eager_set_request.valueLen);
+            //printf("value len setting is %d\n",packet->eager_set_request.valueLen);
             (handle->values)[i] = (char*) malloc((handle->valueLen)[i]);
             handle->entryLen = handle->entryLen + 1;
             memcpy((handle->values)[i],&(packet->eager_set_request.key_and_value[packet->eager_set_request.keyLen]),packet->eager_set_request.valueLen);
@@ -784,7 +784,7 @@ int handle_server_packets_only(struct kv_handle *handle, struct packet *packet)
         response_size = sizeof(struct packet);
         //int i;
         //printf("REDN SET REQUEST$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n");
-        printf("set string: %s\n",packet->rndv_set_request.key);
+        //printf("set string: %s\n",packet->rndv_set_request.key);
         for ( i = 0; i < handle->entryLen; i = i +1 )
         {
             if(strcmp((handle->keys)[i],packet->rndv_set_request.key) == 0) //means we found the key
@@ -795,10 +795,10 @@ int handle_server_packets_only(struct kv_handle *handle, struct packet *packet)
         }
         if(indexFound)
         {
-            printf("index found at rdv\n");
+            //printf("index found at rdv\n");
             kv_release((handle->values)[i]);//TODO check if release is the func we want
             (handle->valueLen)[i] = packet->rndv_set_request.valueLen;
-            printf("rdv value len setting is %d\n",packet->rndv_set_request.valueLen);
+            //printf("rdv value len setting is %d\n",packet->rndv_set_request.valueLen);
             //TODO dereg the older MR that was here and zero all its attributes
             if(handle->remote_addresses[i] != 0 && handle->rkeyValue[i] != 0)
             {
@@ -812,7 +812,7 @@ int handle_server_packets_only(struct kv_handle *handle, struct packet *packet)
             free(handle->values[i]);
            // printf("free done\n");
             //TODO reg a new MR here.
-            printf("server regs memory of size: %d\n@@@@@@@@@@@$$$$$$$$$$$%%%%%%%%\n",(handle->valueLen)[i]);
+            //printf("server regs memory of size: %d\n@@@@@@@@@@@$$$$$$$$$$$%%%%%%%%\n",(handle->valueLen)[i]);
             (handle->values)[i] = (char*) malloc((handle->valueLen)[i]); //this is the address for the new MR.
             handle->registeredMR[i] = ibv_reg_mr(ctx->pd, handle->values[i],
                                                     handle->valueLen[i], IBV_ACCESS_LOCAL_WRITE |
@@ -832,11 +832,11 @@ int handle_server_packets_only(struct kv_handle *handle, struct packet *packet)
             (handle->keyLen)[i] = packet->rndv_set_request.keyLen;
             (handle->keys)[i] = (char*) malloc((handle->keyLen)[i]);
             (handle->valueLen)[i] = packet->rndv_set_request.valueLen;
-            printf("irndv value len setting is %d\n",packet->rndv_set_request.valueLen);
+            //printf("irndv value len setting is %d\n",packet->rndv_set_request.valueLen);
             handle->entryLen = handle->entryLen + 1;
             memcpy((handle->keys)[i],packet->rndv_set_request.key,packet->rndv_set_request.keyLen);
             //TODO reg a new MR here.
-            printf("aloocing %d memory\n",(handle->valueLen)[i]);
+            //printf("aloocing %d memory\n",(handle->valueLen)[i]);
             (handle->values)[i] = (char*) malloc((handle->valueLen)[i]);
             handle->registeredMR[i] = ibv_reg_mr(ctx->pd, handle->values[i],
                                                     handle->valueLen[i], IBV_ACCESS_LOCAL_WRITE |
@@ -1056,22 +1056,26 @@ int main(int argc, char *argv[])
     //printf("server waiting for completions to respond\n");
     while (0 <= pp_wait_completions(server_handle, 1));//TODO will this ever exit?
     //clean after us
+    printf("deregging MR's\n");
     for(int i = 0; i < server_handle->numRegistered; i = i + 1)
     {
         //void * memory = server_handle->registeredMR[i]->addr;
+        
         ibv_dereg_mr(server_handle->registeredMR[i]);
         //free(memory);
     }
+    printf("deregging MR's done\nStarting free k&v\n");
     for(int i = 0; i< server_handle->entryLen; i = i + 1)
     {
         free(server_handle->keys[i]);
         free(server_handle->values[i]);
     }
-    
+    printf("free kv done, closing ctx\n");
     pp_close_ctx(server_handle->ctx);
-
+    printf("ctx closed, freeing device list\n");
     //////////////////////////////////////////////
     ibv_free_device_list(dev_list);
+    printf("device list free, doing last ptrs\n");
     free(rem_dest);
     free(server_handle);
 
