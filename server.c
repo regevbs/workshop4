@@ -1065,8 +1065,8 @@ int main(int argc, char *argv[])
     {
         //void * memory = server_handle->registeredMR[i]->addr;
         printf("mr %d\n",i);
-        printf("key: %s\nvalue: %s\n", server_handle->keys[handle->regMRtoIndex[i]],server_handle->values[handle->regMRtoIndex[i]]);
-        ibv_dereg_mr(server_handle->registeredMR[handle->regMRtoIndex[i]]);
+        printf("key: %s\nvalue: %s\n", server_handle->keys[server_handle->regMRtoIndex[i]],server_handle->values[server_handle->regMRtoIndex[i]]);
+        ibv_dereg_mr(server_handle->registeredMR[server_handle->regMRtoIndex[i]]);
         //free(memory);
     }
     printf("deregging MR's done\nStarting free k&v\n");
